@@ -28,7 +28,11 @@ module Choice
         filters[name] = hash['filter'] if hash['filter']
         actions[name] = hash['action'] if hash['action']
         defaults[name] = hash['default'] if hash['default']
-        validators[name] = hash['validate'] if hash['validate']
+        if hash['validate'] && hash['validate'].respond_to?(:to_s)
+          validators[name] = Regexp.new(hash['validate'].to_s)
+        elsif hash['validate']
+          raise ValidateExpectsRegexp
+        end
         if hash['long'] && hash['long'] =~ /=/
           option, argument = hash['long'].split('=')
           longs[name] = option

@@ -165,17 +165,6 @@ class TestParser < Test::Unit::TestCase
     
     assert_equal email_good, choices[:email]
     
-    @options[:book] = Choice::Option.new do
-      short '-b'
-      long '--book=BOOK'
-      desc 'Your favorite book club.'
-      validate 25
-    end
-    
-    args = ['-b', "Oprah's"]
-    assert_raise(Choice::Parser::ValidateExpectsRegexp) do
-      choices = Choice::Parser.parse(@options, args)
-    end
   end
   
 end
