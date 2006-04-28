@@ -19,6 +19,7 @@ class TestChoice < Test::Unit::TestCase
         long "--band=BAND"
         cast String
         desc "Your favorite band."
+        validate /\w+/
       end
       option :animal do
         short "-a"
@@ -30,7 +31,7 @@ class TestChoice < Test::Unit::TestCase
       footer "--help This message"
     end
     
-    band = 'Led Zeppelin'
+    band = 'LedZeppelin'
     animal = 'Reindeer'
     
     args = ['-b', band, '-a', animal]

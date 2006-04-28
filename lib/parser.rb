@@ -16,38 +16,39 @@ module Choice
         options = new_options
       end
       
-      shorts, longs, filters, casts, actions, required = {}, {}, {}, {}, {}, {}
-      defaults, validators = {}, {}
-      choices = LazyHash.new
+      hashes, longs, required, validators = {}, {}, {}, {}
+      choices = LazyHash.new      
+      params = %w[short cast filter action default]
+      params.each { |param| hashes["#{param}s"] = {} }
 
       options.each do |name, obj|
         name = name.to_s
-        hash = obj.to_h
-        shorts[name] = hash['short'] if hash['short']
-        casts[name] = hash['cast'] if hash['cast']  
-        filters[name] = hash['filter'] if hash['filter']
-        actions[name] = hash['action'] if hash['action']
-        defaults[name] = hash['default'] if hash['default']
-        if hash['validate'] && hash['validate'].respond_to?(:to_s)
-          validators[name] = Regexp.new(hash['validate'].to_s)
-        elsif hash['validate']
+        obj = obj.to_h
+
+        params.each { |param| hashes["#{param}s"][name] = obj[param] if obj[param] }
+        
+        if obj['validate'] && obj['validate'].respond_to?(:to_s)
+          validators[name] = Regexp.new(obj['validate'].to_s)
+        elsif obj['validate']
           raise ValidateExpectsRegexp
         end
-        if hash['long'] && hash['long'] =~ /=/
-          option, argument = hash['long'].split('=')
+        
+        if obj['long'] && obj['long'] =~ /=/
+          option, argument = obj['long'].split('=')
           longs[name] = option
           required[name] = true unless argument =~ /^\[(.+)\]$/
-        elsif hash['long']
-          longs[name] = hash['long']
+        elsif obj['long']
+          longs[name] = obj['long']
         end
       end
 
       args.each_with_index do |arg, i|
-        if shorts.value?(arg)
+        if hashes['shorts'].value?(arg)
           value = args[i+1]
           value = true if !value || value =~ /^-/
-          choices[shorts.index(arg)] = value
+          choices[hashes['shorts'].index(arg)] = value
         end
+        
         if arg =~ /=/ && longs.value?(arg.split('=')[0])
           choices[longs.index(arg.split('=')[0])] = arg.split('=')[1]
         elsif longs.value?(arg)
@@ -58,12 +59,12 @@ module Choice
       choices.each do |name, value|
         raise ArgumentRequired if required[name] && value === true
         raise ArgumentValidationFails if validators[name] && validators[name] !~ value
-        choices[name] = value.send(CAST_METHODS[casts[name]]) if casts.include?(name)
-        filters[name].call(value) if filters.include?(name)
-        actions[name].call(value) if actions.include?(name)
+        choices[name] = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
+        hashes['filters'][name].call(value) if hashes['filters'].include?(name)
+        hashes['actions'][name].call(value) if hashes['actions'].include?(name)
       end
       
-      defaults.each do |name, value|
+      hashes['defaults'].each do |name, value|
         choices[name] = value unless choices[name]
       end
       
