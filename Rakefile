@@ -5,7 +5,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/contrib/sshpublisher'
-require './lib/version'
+require './lib/choice/version'
 
 PACKAGE_NAME = "choice"
 PACKAGE_VERSION = Choice::Version::STRING
@@ -19,7 +19,7 @@ end
 
 PACKAGE_FILES = FileList.new do |fl|
   fl.include "CHANGELOG", "README", "LICENSE"
-  fl.include "#{PACKAGE_NAME}.gemspec", "setup.rb"
+#  fl.include "#{PACKAGE_NAME}.gemspec", "setup.rb"
   fl.include SOURCE_FILES
 end
 
@@ -34,7 +34,7 @@ def can_require( file )
   end
 end
 
-desc "Default task - run tests"
+desc "Default task"
 task :default => [ :test ]
 
 desc "Build documentation"
@@ -122,9 +122,10 @@ file "#{package_dir}/#{gem_file}" => package_dir do
   	s.summary = "Choice is a command line option parser."
   	s.description = "Choice is a simple little gem for easily defining and parsing command line options with a friendly DSL."
   	s.require_paths = [ 'lib' ]
-  	s.files = Dir.glob( 'lib/**/*' ).delete_if { |item|
-  		item.include?('.svn')
-  	}
+  	s.files = %w[README CHANGELOG LICENSE]
+  	[ 'lib/**/*', 'test/*', 'examples/*' ].each do |dir|
+  	  s.files += Dir.glob( dir ).delete_if { |item| item =~ /^\./ }
+  	end
   	s.author = "Chris Wanstrath"
   	s.email = 'chris@ozmm.org'
   	s.homepage = 'http://choice.rubyforge.org/'
@@ -148,17 +149,17 @@ end
 Rake::RDocTask.new( :rdoc_core ) do |rdoc|
   rdoc.rdoc_dir = rdoc_dir
   rdoc.title    = "Choice -- A simple command line option parser"
-  rdoc.options << '--line-numbers --inline-source --main README'
+  rdoc.option_string << '--line-numbers --inline-source --main README'
   rdoc.rdoc_files.include 'README'
   rdoc.rdoc_files.include 'lib/**/*.rb'
 end
 
- desc "Publish the API documentation"
- task :pubrdoc => [ :rdoc ] do
-  Rake::SshDirPublisher.new(
-    "ozmm@rubyforge.org",
-    "/var/www/gforge-projects/choice/",
-    "api" ).upload
+desc "Publish the API documentation"
+task :pubrdoc => [ :rdoc ] do
+Rake::SshDirPublisher.new(
+  "ozmm@rubyforge.org",
+  "/var/www/gforge-projects/choice/",
+  "api" ).upload
 end
 
 desc "Publish the documentation"
