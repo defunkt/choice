@@ -1,8 +1,7 @@
-$:.unshift "choice"
-require 'option'
-require 'parser'
-require 'writer'
-require 'lazyhash'
+require 'choice/option'
+require 'choice/parser'
+require 'choice/writer'
+require 'choice/lazyhash'
 
 module Choice
   class <<self

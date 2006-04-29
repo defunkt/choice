@@ -1,5 +1,3 @@
-require 'option'
-
 module Choice
   module Parser
     
