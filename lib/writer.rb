@@ -3,8 +3,8 @@ module Choice
 
     def self.help(args, target = STDOUT, dont_exit = false)
       self.target = target
-      @@options = args[:options]
-      %w[banner header options footer].each do |meth|
+      banner(args[:banner], args[:options])
+      %w[header options footer].each do |meth|
         send(meth, args[meth.to_sym])
       end
       exit unless dont_exit
@@ -13,11 +13,11 @@ module Choice
     class <<self
       private
       
-      def banner(banner)
+      def banner(banner, options)
         if banner
           puts banner
         else
-          usage
+          usage(options)
         end
       end
       
@@ -59,14 +59,14 @@ module Choice
         footer.each { |line| puts line } unless footer.nil?
       end
       
-      def usage
-        options = '-'
-        @@options.dup.each do |option|
+      def usage(options)
+        opts = '-'
+        options.dup.each do |option|
           next unless option.is_a?(Array)
           option = option.last.to_h
-          options << option['short'].sub('-','') if option['short']
+          opts << option['short'].sub('-','') if option['short']
         end
-        puts "Usage: #{program} [#{options}]"
+        puts "Usage: #{program} [#{opts}]"
       end
 
       def program

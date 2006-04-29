@@ -1,5 +1,4 @@
-require 'lib/option'
-require 'lib/lazyhash'
+require 'option'
 
 module Choice
   module Parser
@@ -16,8 +15,7 @@ module Choice
         options = new_options
       end
       
-      hashes, longs, required, validators = {}, {}, {}, {}
-      choices = LazyHash.new      
+      hashes, longs, required, validators, choices = {}, {}, {}, {}, {}
       params = %w[short cast filter action default]
       params.each { |param| hashes["#{param}s"] = {} }
 
@@ -47,18 +45,13 @@ module Choice
           value = args[i+1]
           value = true if !value || value =~ /^-/
           choices[hashes['shorts'].index(arg)] = value
-          next
-        end
-        
-        if arg =~ /=/ && longs.value?(arg.split('=')[0])
+        elsif arg =~ /=/ && longs.value?(arg.split('=')[0])
           choices[longs.index(arg.split('=')[0])] = arg.split('=')[1]
-          next
         elsif longs.value?(arg)
           choices[longs.index(arg)] = true
-          next
+        else
+          raise UnknownArgument if arg =~ /^-/
         end
-        
-        raise UnknownArgument if arg =~ /^-/
       end
 
       choices.each do |name, value|

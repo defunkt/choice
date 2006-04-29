@@ -1,7 +1,6 @@
-#!/usr/bin/env ruby
-
+$:.unshift "../lib"
 require 'test/unit'
-require 'lib/choice'
+require 'choice'
 
 class TestParser < Test::Unit::TestCase
   def setup
@@ -29,7 +28,7 @@ class TestParser < Test::Unit::TestCase
     choices = Choice::Parser.parse(@options, args)
     
     assert_equal band, choices['band']
-    assert_equal animal, choices[:animal]
+    assert_equal animal, choices['animal']
   end
   
   def test_parse_no_options
@@ -47,7 +46,7 @@ class TestParser < Test::Unit::TestCase
     
     choices = Choice::Parser.parse(@options, args)
     
-    assert_equal 'PibbJr', choices[:soda]
+    assert_equal 'PibbJr', choices['soda']
   end
   
   def test_parse_options_with_filters
@@ -61,7 +60,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-h', host]
     choices = Choice::Parser.parse(@options, args)
     
-    assert_equal host.gsub(/[^\w]/, ''), choices[:host]  
+    assert_equal host.gsub(/[^\w]/, ''), choices['host']  
   end 
   
   def test_casting
@@ -74,7 +73,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-p', port]
     choices = Choice::Parser.parse(@options, args)
     
-    assert_equal port.to_i, choices[:port]
+    assert_equal port.to_i, choices['port']
   end
   
   def test_text_required
@@ -104,13 +103,13 @@ class TestParser < Test::Unit::TestCase
     args = ['-c']
     choices = Choice::Parser.parse(@options, args)
     
-    assert choices[:color]
+    assert choices['color']
     
     color = 'ladyblue'
     args = ['-c', color]
     choices = Choice::Parser.parse(@options, args)
     
-    assert_equal color, choices[:color]
+    assert_equal color, choices['color']
   end
   
   def test_ignore_separator
@@ -128,12 +127,12 @@ class TestParser < Test::Unit::TestCase
     args = ['-m', 'onebutton']
     choices = Choice::Parser.parse([options.first, '----', options.last], args)
     
-    assert choices[:mouse]
+    assert choices['mouse']
     assert_equal 1, choices.size
   end
   
   def test_long_as_switch
-    @options[:chunky] = Choice::Option.new do
+    @options['chunky'] = Choice::Option.new do
       short '-b'
       long '--bacon'
     end
@@ -141,11 +140,11 @@ class TestParser < Test::Unit::TestCase
     args = ['--bacon']
     choices = Choice::Parser.parse(@options, args)
     
-    assert choices[:chunky]
+    assert choices['chunky']
   end
   
   def test_validate
-    @options[:email] = Choice::Option.new do
+    @options['email'] = Choice::Option.new do
       short '-e'
       long '--email=EMAIL'
       desc 'Your valid email addy.'
@@ -163,11 +162,11 @@ class TestParser < Test::Unit::TestCase
     args = ['-e', email_good]
     choices = Choice::Parser.parse(@options, args)
     
-    assert_equal email_good, choices[:email]
+    assert_equal email_good, choices['email']
   end
   
   def test_unknown_argument
-    @options[:cd] = Choice::Option.new do
+    @options['cd'] = Choice::Option.new do
       short '-c'
       long '--cd=CD'
       desc 'A CD you like.'

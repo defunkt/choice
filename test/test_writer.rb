@@ -1,7 +1,6 @@
-#!/usr/bin/env ruby
-
+$:.unshift "../lib"
 require 'test/unit'
-require 'lib/choice'
+require 'choice'
 
 class TestWriter < Test::Unit::TestCase
   

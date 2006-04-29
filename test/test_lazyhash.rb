@@ -1,7 +1,6 @@
-#!/usr/bin/env ruby
-
+$:.unshift "../lib"
 require 'test/unit'
-require 'lib/lazyhash'
+require 'lazyhash'
 
 class TestLazyHash < Test::Unit::TestCase
   
@@ -30,7 +29,7 @@ class TestLazyHash < Test::Unit::TestCase
   end
   
   def test_store_and_fetch
-    name = 'Topher James'
+    name = 'Jimini Jeremiah'
     job = 'Interior Decorator'
     
     hash = Choice::LazyHash.new
@@ -39,6 +38,29 @@ class TestLazyHash < Test::Unit::TestCase
     
     assert_equal name, hash.fetch(:name)
     assert_equal job, hash.fetch('job')
+  end
+  
+  def test_messages
+    star = 'Sol'
+    planet = 'Mars'
+
+    hash = Choice::LazyHash.new
+    hash.star = star
+    hash.planet = planet
+
+    assert_equal star, hash.star
+    assert_equal planet, hash.planet
+  end
+
+  def test_from_hash
+    state = 'Nebraska'
+    country = 'Mexico'
+
+    hash = { :state => state, :country => country }
+    lazy = Choice::LazyHash.new(hash)
+
+    assert_equal state, lazy['state']
+    assert_equal country, lazy[:country]
   end
   
 end

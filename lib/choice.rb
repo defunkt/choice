@@ -1,6 +1,7 @@
-require 'lib/option'
-require 'lib/parser'
-require 'lib/writer'
+require 'option'
+require 'parser'
+require 'writer'
+require 'lazyhash'
 
 module Choice
   VERSION = "1.0"
@@ -52,7 +53,7 @@ module Choice
         self.help
       else
         begin
-          @@choices = Parser.parse(@@options, @@args) || {}
+          @@choices = LazyHash.new(Parser.parse(@@options, @@args))
         rescue Choice::Parser::UnknownArgument
           self.help
         end
