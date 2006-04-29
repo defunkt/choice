@@ -1,13 +1,10 @@
+$:.unshift "choice"
 require 'option'
 require 'parser'
 require 'writer'
 require 'lazyhash'
 
 module Choice
-  VERSION = "1.0"
-  AUTHOR = "Chris Wanstrath"
-  SITE = "http://rubyforge.org/projects/choice/"
-  
   class <<self
     def options(&block)
       @@args    ||= false
