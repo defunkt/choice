@@ -43,7 +43,7 @@ module Choice
       @@footer << str
     end
     
-    def parse
+    def parse #:nodoc:
       return unless @@options.size > 0
       if @@args.include?('--help')
         self.help
@@ -56,40 +56,40 @@ module Choice
       end
     end
     
-    def parsed?
+    def parsed? #:nodoc:
       @@choices ||= false
     end
     
-    def help
+    def help #:nodoc:
       Writer.help( { :banner => @@banner, :header => @@header, 
                      :options => @@options, :footer => @@footer }, 
                      output_to, exit_on_help?)
     end
     
-    def args=(args)
+    def args=(args) #:nodoc:
       @@args = args.dup.map{ |a| a + '' }
       parse if parsed?
     end
   
-    def args
+    def args #:nodoc:
       @@args
     end
     
-    def dont_exit_on_help=(val)
+    def dont_exit_on_help=(val) #:nodoc:
       @@exit = true
     end
     
-    def exit_on_help?
+    def exit_on_help? #:nodoc:
       @@exit rescue false
     end
     
-    def output_to(target = nil)
+    def output_to(target = nil) #:nodoc:
       @@output_to ||= STDOUT
       return @@output_to if target.nil?
       @@output_to = target
     end
     
-    def reset
+    def reset #:nodoc:
       @@args    = false
       @@banner  = false
       @@header  = Array.new

@@ -46,6 +46,12 @@ Rake::TestTask.new :test do |t|
   t.test_files = [ "test/test*" ]
 end
 
+desc "Clean generated files"
+task :clean do
+  rm_rf "pkg"
+  rm_rf "api"
+end
+
 desc "Prepackage warnings and reminders"
 task :prepackage do
   unless ENV["OK"] == "yes"

@@ -70,8 +70,6 @@ Choice.options do
     end
   end
   
-  
-     
 end
 
 print "Choices: "

@@ -1,5 +1,5 @@
 module Choice
-  module Version
+  module Version #:nodoc:
     STRING = "0.1.0"
     MAJOR  = 0
     MINOR  = 1

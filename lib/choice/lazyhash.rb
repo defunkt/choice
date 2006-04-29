@@ -1,5 +1,5 @@
 module Choice
-  class LazyHash < Hash
+  class LazyHash < Hash #:nodoc:
     alias_method :old_store, :store
     alias_method :old_fetch, :fetch
     

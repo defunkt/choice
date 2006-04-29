@@ -1,5 +1,5 @@
 module Choice
-  module Parser
+  module Parser #:nodoc: all
     
     CAST_METHODS = { Integer => :to_i, String => :to_s, Float => :to_s,
                      Symbol => :to_sym }

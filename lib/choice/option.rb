@@ -1,5 +1,5 @@
 module Choice
-  class Option    
+  class Option #:nodoc: all
     CHOICES = %w[short long desc default filter action cast validate]
 
     def initialize(option = nil, &block)

@@ -1,6 +1,5 @@
 module Choice
-  module Writer
-
+  module Writer #:nodoc:
     def self.help(args, target = STDOUT, dont_exit = false)
       self.target = target
       banner(args[:banner], args[:options])
