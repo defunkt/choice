@@ -3,6 +3,7 @@ module Choice
 
     def self.help(args, target = STDOUT, dont_exit = false)
       self.target = target
+      @@options = args[:options]
       %w[banner header options footer].each do |meth|
         send(meth, args[meth.to_sym])
       end
@@ -59,11 +60,17 @@ module Choice
       end
       
       def usage
-        puts "Usage: #{program} [options]"
+        options = '-'
+        @@options.dup.each do |option|
+          next unless option.is_a?(Array)
+          option = option.last.to_h
+          options << option['short'].sub('-','') if option['short']
+        end
+        puts "Usage: #{program} [#{options}]"
       end
 
       def program
-        if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end.sub(/\.rb$/,'')
+        if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end
       end
 
       def target=(target)

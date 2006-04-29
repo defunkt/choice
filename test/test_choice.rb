@@ -34,7 +34,7 @@ class TestChoice < Test::Unit::TestCase
     band = 'LedZeppelin'
     animal = 'Reindeer'
     
-    args = ['-b', band, '-a', animal]
+    args = ['-b', band, "--animal=#{animal}"]
     Choice.args = args
     
     assert_equal band, Choice.choices['band']
@@ -53,7 +53,7 @@ class TestChoice < Test::Unit::TestCase
     Choice.args = ['-m', 'lunch', '--help']
     
     Choice.options do
-      banner "Usage: choice [options]"
+      banner "Usage: choice [-mu]"
       header ""
       option :meal do
         short '-m'
@@ -71,7 +71,42 @@ class TestChoice < Test::Unit::TestCase
     end
     
     help_string = <<-HELP
-Usage: choice [options]
+Usage: choice [-mu]
+
+    -m                               Your favorite meal.
+
+And you eat it with...
+    -u, --utencil=[UTENCIL]          Your favorite eating utencil.
+HELP
+
+    assert_equal help_string, HELP_STRING
+  end
+  
+  UNKNOWN_STRING = ''
+  def test_unknown_argument
+    Choice.output_to(UNKNOWN_STRING)
+    Choice.args = ['-m', 'lunch', '--motorcycles']
+    
+    Choice.options do
+      banner "Usage: choice [-mu]"
+      header ""
+      option :meal do
+        short '-m'
+        desc 'Your favorite meal.'
+      end
+      
+      separator ""
+      separator "And you eat it with..."
+      
+      option :utencil do
+        short "-u"
+        long "--utencil=[UTENCIL]"
+        desc "Your favorite eating utencil."
+      end
+    end
+    
+    help_string = <<-HELP
+Usage: choice [-mu]
 
     -m                               Your favorite meal.
 
@@ -79,7 +114,7 @@ And you eat it with...
     -u, --utencil=[UTENCIL]          Your favorite eating utencil.
 HELP
     
-    assert_equal help_string, HELP_STRING
+    assert_equal help_string, UNKNOWN_STRING
   end
   
 end

@@ -47,19 +47,26 @@ module Choice
           value = args[i+1]
           value = true if !value || value =~ /^-/
           choices[hashes['shorts'].index(arg)] = value
+          next
         end
         
         if arg =~ /=/ && longs.value?(arg.split('=')[0])
           choices[longs.index(arg.split('=')[0])] = arg.split('=')[1]
+          next
         elsif longs.value?(arg)
           choices[longs.index(arg)] = true
+          next
         end
+        
+        raise UnknownArgument if arg =~ /^-/
       end
 
       choices.each do |name, value|
         raise ArgumentRequired if required[name] && value === true
         raise ArgumentValidationFails if validators[name] && validators[name] !~ value
+        
         choices[name] = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
+        
         hashes['filters'][name].call(value) if hashes['filters'].include?(name)
         hashes['actions'][name].call(value) if hashes['actions'].include?(name)
       end
@@ -71,6 +78,7 @@ module Choice
       choices
     end
     
+    class UnknownArgument < Exception; end
     class ValidateExpectsRegexp < Exception; end
     class ArgumentValidationFails < Exception; end
     class ArgumentRequired < Exception; end

@@ -52,9 +52,31 @@ HELP
   
   BANNER_OUT = ''
   def test_banner
-    Choice::Writer.help(Hash.new, BANNER_OUT, true)
+    media = Choice::Option.new do
+      short '-m'
+      long '--media=MEDIA'
+    end
+    rom = Choice::Option.new do
+      short '-r'
+      long '--rom=ROM'
+    end
+
+    options = [[:media, media], [:rom, rom]]
+    args = { :header => [""],
+             :options => options }
+
+    program = if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end
+
+    help_string = <<-HELP
+Usage: #{program} [-mr]
+
+    -m, --media=MEDIA                
+    -r, --rom=ROM                    
+HELP
+
+    Choice::Writer.help(args, BANNER_OUT, true)
     
-    assert (BANNER_OUT =~ /Usage/)
+    assert_equal help_string, BANNER_OUT
   end
   
   

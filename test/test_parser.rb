@@ -164,7 +164,18 @@ class TestParser < Test::Unit::TestCase
     choices = Choice::Parser.parse(@options, args)
     
     assert_equal email_good, choices[:email]
-    
   end
   
+  def test_unknown_argument
+    @options[:cd] = Choice::Option.new do
+      short '-c'
+      long '--cd=CD'
+      desc 'A CD you like.'
+    end
+  
+    args = ['-c', 'BestOfYanni', '--grace']
+    assert_raise(Choice::Parser::UnknownArgument) do
+      choices = Choice::Parser.parse(@options, args)
+    end
+  end
 end

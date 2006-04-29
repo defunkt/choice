@@ -51,7 +51,11 @@ module Choice
       if @@args.include?('--help')
         self.help
       else
-        @@choices = Parser.parse(@@options, @@args) || {}
+        begin
+          @@choices = Parser.parse(@@options, @@args) || {}
+        rescue Choice::Parser::UnknownArgument
+          self.help
+        end
       end
     end
     
