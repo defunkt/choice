@@ -1,6 +1,6 @@
 $:.unshift "../lib"
 require 'test/unit'
-require 'lazyhash'
+require 'choice/lazyhash'
 
 class TestLazyHash < Test::Unit::TestCase
   

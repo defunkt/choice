@@ -1,6 +1,7 @@
 $:.unshift "../lib"
 require 'test/unit'
-require 'choice'
+require 'choice/option'
+require 'choice/parser'
 
 class TestParser < Test::Unit::TestCase
   def setup

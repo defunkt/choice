@@ -1,6 +1,7 @@
 $:.unshift "../lib"
 require 'test/unit'
-require 'choice'
+require 'choice/option' # i use this because i am lazy
+require 'choice/writer'
 
 class TestWriter < Test::Unit::TestCase
   
