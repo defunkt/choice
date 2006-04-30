@@ -1,4 +1,4 @@
-$:.unshift "../lib"
+$:.unshift "../lib:lib"
 require 'test/unit'
 require 'choice/option' # i use this because i am lazy
 require 'choice/writer'

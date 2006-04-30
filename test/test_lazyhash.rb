@@ -1,4 +1,4 @@
-$:.unshift "../lib"
+$:.unshift "../lib:lib"
 require 'test/unit'
 require 'choice/lazyhash'
 
