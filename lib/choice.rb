@@ -50,7 +50,7 @@ module Choice
       else
         begin
           @@choices = LazyHash.new(Parser.parse(@@options, @@args))
-        rescue Choice::Parser::UnknownArgument
+        rescue Choice::Parser::UnknownArgument, Choice::Parser::ArgumentRequired
           self.help
         end
       end
