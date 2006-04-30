@@ -13,7 +13,8 @@ Choice.options do
   option :host do
     short '-h'
     long '--host=HOST'
-    desc "The hostname or ip of the host to bind to (default 127.0.0.1)"
+    desc "The hostname or ip of the host to bind to"
+    desc "(default 127.0.0.1)"
     default '127.0.0.1'
   end
 
