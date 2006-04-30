@@ -1,4 +1,4 @@
-$:.unshift "../lib"
+$:.unshift "../lib:lib"
 require 'test/unit'
 require 'choice/option'
 require 'choice/parser'
@@ -55,13 +55,14 @@ class TestParser < Test::Unit::TestCase
       short '-h'
       filter do |opt|
         opt.gsub!(/[^\w]/, '')
+        opt = opt.sub(/k/, 'c')
       end
     end     
     host = 'de.fun.kt'
     args = ['-h', host]
     choices = Choice::Parser.parse(@options, args)
     
-    assert_equal host.gsub(/[^\w]/, ''), choices['host']  
+    assert_equal 'defunct', choices['host']
   end 
   
   def test_casting

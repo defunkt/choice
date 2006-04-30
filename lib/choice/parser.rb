@@ -56,10 +56,12 @@ module Choice
         raise ArgumentRequired if required[name] && value === true
         raise ArgumentValidationFails if validators[name] && validators[name] !~ value
         
-        choices[name] = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
+        value = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
         
-        hashes['filters'][name].call(value) if hashes['filters'].include?(name)
+        value = hashes['filters'][name].call(value) if hashes['filters'].include?(name)
         hashes['actions'][name].call(value) if hashes['actions'].include?(name)
+        
+        choices[name] = value
       end
       
       hashes['defaults'].each do |name, value|
