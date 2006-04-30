@@ -2,6 +2,7 @@ $:.unshift "../lib"
 require 'choice'
 
 port = 21
+PROGRAM_VERSION = 4
 
 Choice.options do
   #banner "Usage: ftpd.rb [options]"
@@ -65,7 +66,7 @@ Choice.options do
     long '--version'
     desc 'Show version'
     action do
-      puts "ftpd.rb FTP server v4"
+      puts "ftpd.rb FTP server v#{PROGRAM_VERSION}"
       exit      
     end
   end
