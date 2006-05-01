@@ -1,4 +1,5 @@
 module Choice
+ 
   # This class lets us get away with really bad, horrible, lazy hash accessing.
   # Like so:
   #   hash = LazyHash.new
@@ -11,6 +12,7 @@ module Choice
   # it into a lazyhash.  Or you can use the .to_lazyhash method attached to the 
   # Hash object (evil!).
   class LazyHash < Hash 
+    
     # Keep the old methods around.
     alias_method :old_store, :store
     alias_method :old_fetch, :fetch

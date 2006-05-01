@@ -1,7 +1,8 @@
 module Choice
+  
   # The parser takes our option definitions and our arguments and produces
   # a hash of values.
-  module Parser 
+  module Parser #:nodoc: all
     
     # What method to call on an object for each given 'cast' value.
     CAST_METHODS = { Integer => :to_i, String => :to_s, Float => :to_f,
