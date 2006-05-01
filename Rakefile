@@ -61,7 +61,7 @@ task :prepackage do
     puts
     puts "   README (with latest info)"
     puts "   CHANGELOG (with the recent changes)"
-    puts "   lib/choice.rb (with current version number)"
+    puts "   lib/choice/version.rb (with current version number)"
     puts
     puts " Did you remember to 'rake tag'?"  
     puts
