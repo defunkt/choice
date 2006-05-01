@@ -71,9 +71,10 @@ module Choice
       choices
     end
     
-    class UnknownArgument < Exception; end
-    class ValidateExpectsRegexp < Exception; end
-    class ArgumentValidationFails < Exception; end
-    class ArgumentRequired < Exception; end
+    class ParseError < Exception; end
+    class UnknownArgument < ParseError; end      
+    class ValidateExpectsRegexp < ParseError; end
+    class ArgumentValidationFails < ParseError; end
+    class ArgumentRequired < ParseError; end
   end
 end
