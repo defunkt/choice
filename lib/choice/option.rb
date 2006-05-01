@@ -1,7 +1,7 @@
 module Choice
   # The Option class parses and stores all the information about a specific
   # option.
-  class Option #:nodoc: all
+  class Option 
     # Since we define getters/setters on the fly, we need a white list of
     # which to accept.  Here's the list.
     CHOICES = %w[short long desc default filter action cast validate]

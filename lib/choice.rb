@@ -32,7 +32,7 @@ module Choice
       @@choices
     end
   
-    # Defines options.
+    # Defines an option.
     def option(opt, &block)
       # Notice: options is maintained as an array of arrays, the first element
       # the option name and the second the option object.

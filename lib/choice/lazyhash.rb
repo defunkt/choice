@@ -6,7 +6,11 @@ module Choice
   #   puts hash[:someplace]
   #   puts hash['someplace']
   #   puts hash.someplace
-  class LazyHash < Hash #:nodoc:
+  #
+  # If you'd like, you can pass in a current hash when initializing to convert
+  # it into a lazyhash.  Or you can use the .to_lazyhash method attached to the 
+  # Hash object (evil!).
+  class LazyHash < Hash 
     # Keep the old methods around.
     alias_method :old_store, :store
     alias_method :old_fetch, :fetch
@@ -50,5 +54,12 @@ module Choice
       end
     end
     
+  end
+end
+
+# Really ugly, horrible, extremely fun hack.
+class Hash #:nodoc: 
+  def to_lazyhash
+    return LazyHash.new(self) if const_defined?(LazyHash)
   end
 end

@@ -1,7 +1,7 @@
 module Choice
   # This module writes to the screen.  As of now, its only real use is writing
   # the help screen.
-  module Writer #:nodoc:
+  module Writer 
     
     # Some constants used for printing and line widths
     SHORT_LENGTH = 6
