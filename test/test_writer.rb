@@ -1,7 +1,6 @@
 $:.unshift "../lib:lib"
 require 'test/unit'
-require 'choice/option' # i use this because i am lazy
-require 'choice/writer'
+require 'choice'
 
 class TestWriter < Test::Unit::TestCase
   
@@ -65,8 +64,6 @@ HELP
     args = { :header => [""],
              :options => options }
 
-    program = if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end
-
     help_string = <<-HELP
 Usage: #{program} [-mr]
 
@@ -79,5 +76,28 @@ HELP
     assert_equal help_string, BANNER_OUT
   end
   
+  SPILLOVER_OUT = ''
+  def test_desc_spillover
+    toolong = Choice::Option.new do
+      long '--thisisgonnabewaytoolongiswear=STRING'
+      desc 'Way too long, boy wonder.'
+    end
+    
+    options = [[:toolong, toolong]]
+    
+    help_string = <<-HELP
+Usage: #{program}
+        --thisisgonnabewaytoolongiswear=STRING
+                                     Way too long, boy wonder.
+HELP
+    
+
+    Choice::Writer.help({:options => options}, SPILLOVER_OUT, true)
+    
+    assert_equal help_string, SPILLOVER_OUT
+  end
   
+  def program
+    if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end  
+  end
 end

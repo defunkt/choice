@@ -3,6 +3,13 @@ module Choice
   # the help screen.
   module Writer #:nodoc:
     
+    # Some constants used for printing and line widths
+    SHORT_LENGTH = 6
+    SHORT_BREAK_LENGTH = 2 
+    LONG_LENGTH = 29
+    PRE_DESC_LENGTH = SHORT_LENGTH + SHORT_BREAK_LENGTH + LONG_LENGTH
+    
+    
     # The main method.  Takes a hash of arguments with the following possible
     # keys, running them through the appropriate method:
     #  banner, header, options, footer
@@ -70,15 +77,29 @@ module Choice
         # Expect a hash
         return unless option.is_a?(Hash)
 
-        # Print the short part.
-        printf '%6s', option['short']
-        printf '%-2s', (',' if option['short'] && option['long'])
+        # Make this easier on us
+        short = option['short']
+        long = option['long']
+        line = ''
 
-        # Print the long part.
-        printf '%-29s', option['long']
+        # Get the short part.
+        line << sprintf("%#{SHORT_LENGTH}s", short)
+        line << sprintf("%-#{SHORT_BREAK_LENGTH}s", (',' if short && long))
+
+        # Get the long part.
+        line << sprintf("%-#{LONG_LENGTH}s", long)
+
+        # Print what we have so far
+        print line
 
         # If there's a desc, print it.
         if option['desc']
+          # If the line is too long, spill over to the next line
+          if line.length > PRE_DESC_LENGTH
+            puts           
+            print " " * PRE_DESC_LENGTH
+          end
+
           puts option['desc'].shift
           
           # If there is more than one desc line, print each one in succession
@@ -121,8 +142,13 @@ module Choice
           opts << option['short'].sub('-','') if option['short']
         end
         
+        # Figure out if we actually got any options.
+        opts = if opts =~ /^-(.+)/
+                 " [#{opts}]"
+               end.to_s
+        
         # Print it out, with our newly aquired options string.
-        puts "Usage: #{program} [#{opts}]"
+        puts "Usage: #{program}" <<  opts
       end
 
       # Figure out the name of this program based on what was run.
