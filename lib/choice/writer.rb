@@ -141,7 +141,8 @@ module Choice
       end
 
       # Fake puts
-      def puts(str)
+      def puts(str = nil)
+        str = '' if str.nil?
         print(str + "\n")
       end
       
