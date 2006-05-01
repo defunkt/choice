@@ -1,3 +1,4 @@
+$:.unshift File.dirname(__FILE__)
 require 'choice/option'
 require 'choice/parser'
 require 'choice/writer'

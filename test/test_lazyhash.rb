@@ -63,4 +63,14 @@ class TestLazyHash < Test::Unit::TestCase
     assert_equal country, lazy[:country]
   end
   
+  def test_to_lazyhash
+    hash = { :name => 'Jimmy', :age => 25 }
+    lazy = hash.to_lazyhash
+
+    assert_equal hash[:name], lazy.name
+    assert_equal hash[:name], lazy[:name]
+    assert_equal hash[:age], lazy.age
+    assert_equal hash[:age], lazy[:age]
+  end
+
 end

@@ -62,6 +62,6 @@ end
 # Really ugly, horrible, extremely fun hack.
 class Hash #:nodoc: 
   def to_lazyhash
-    return LazyHash.new(self) if const_defined?(LazyHash)
+    return Choice::LazyHash.new(self) 
   end
 end
