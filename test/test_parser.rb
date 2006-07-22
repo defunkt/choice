@@ -299,4 +299,51 @@ class TestParser < Test::Unit::TestCase
       choices = Choice::Parser.parse(@options, args)
     end
   end
+
+  def test_long_with_spaces
+    @options['donut'] = Choice::Option.new do
+      short '-d'
+      long '--donut DONUT'
+      desc "Your favorite donut style."
+    end
+
+    donut = 'long-john'
+
+    args = ['--donut', donut]
+    choices = Choice::Parser.parse(@options, args)
+    
+    assert_equal donut, choices['donut']
+  end
+
+  def test_optional_long_with_spaces
+    @options['donut'] = Choice::Option.new do
+      short '-d'
+      long '--donut [DONUT]'
+      desc "Your favorite donut style."
+    end
+
+    donut = 'chocolate'
+
+    args = ['--donut', donut]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal donut, choices['donut']
+
+    args = ['--donut']
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal true, choices['donut']
+  end
+
+  def test_long_with_spaces_arrayed
+    @options['donuts'] = Choice::Option.new do
+      short '-d'
+      long '--donuts *DONUTS'
+      desc "Your favorite donut styles."
+    end
+
+    donuts = %w[glazed cream-filled]
+
+    args = ['--donuts', donuts.first, donuts.last]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal donuts, choices['donuts']
+  end
 end

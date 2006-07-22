@@ -7,6 +7,7 @@
   - Added a 'valid' option as per bugtracker request for 'enum.' [Alexis Li]
   - Change --long=[ARG] optional format to --long[=ARG] but keep around old format just in case.
   - Added list format to options as per bug tracker suggestion in the format of --long=*LONG [Alexis Li]
+  - Added --long ARG format.  Works with --long [ARG] and --long *ARG and --long [*ARG]
 
 0.1.0:
   - First release

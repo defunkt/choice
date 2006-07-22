@@ -58,7 +58,7 @@ module Choice
         # Parse the long option. If it contains a =, figure out if the 
         # argument is required or optional.  Optional arguments are formed
         # like [=ARG], whereas required are just ARG (in --long=ARG style).
-        if obj['long'] && obj['long'] =~ /(=|\[)/
+        if obj['long'] && obj['long'] =~ /(=|\[| )/
           # Save the separator we used, as we're gonna need it, then split
           sep = $1
           option, *argument = obj['long'].split(sep)
@@ -111,23 +111,36 @@ module Choice
             choices[name] = value
           end
 
-        elsif arg =~ /=/ && longs.value?((longed = arg.split('=')).first)
-          # If we get a long with a = in it, grab it and the argument
-          # passed to it.
-          name = longs.index(longed.shift)
-
-          # If we expect an array, tack this argument on.
-          if arrayed[name]
-            choices[name] ||= []
-            choices[name] << longed * '='
-            choices[name] += arrayize_arguments(name, args[i+1..-1])
+        elsif /^(--[^=]+)=?/ =~ arg && longs.value?($1)
+          # The joke here is we always accept both --long=VALUE and --long VALUE.
+          
+          # Grab values from --long=VALUE format
+          if arg =~ /=/ && longs.value?((longed = arg.split('=')).first)
+            name  = longs.index(longed.shift)
+            value = longed * '='
+            # For the arrayed options.
+            potential_args = args[i+1..-1]
           else
-            choices[name] = longed * '='
+            # Grab value otherwise if not in --long=VALUE format.  Assume --long VALUE.
+            name = longs.index(arg)
+            # Value is nil if we don't have a = and the next argument is no good
+            value = args[i+1] =~ /^-/ ? nil : args[i+1] 
+            # For the arrayed options.
+            potential_args = args[i+2..-1]
           end
 
-        elsif longs.value?(arg)
-          # If we get a long with no =, just set it to true.
-          choices[longs.index(arg)] = true
+          # If we expect an array, tack this argument on.
+          if arrayed[name] && !value.nil?
+            # If this is arrayed and the value isn't nil, set it.
+            choices[name] ||= []
+            choices[name] << value
+            choices[name] += arrayize_arguments(name, potential_args)
+          else
+            # If we set the value to nil, that means nothing was set and we
+            # need to set the value to true.  We'll find out later if that's 
+            # acceptable or not.
+            choices[name] = value.nil? ? true : value
+          end
 
         else
           # If we're here, we have no idea what the passed argument is.  Die.
