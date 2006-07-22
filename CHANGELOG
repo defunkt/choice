@@ -1,6 +1,7 @@
 0.1.1:
   - Fixed test_option.rb to be self sufficient.
   - Fix so that long argument with equals sign in it will parse correctly [Justin Bailey]
+  - Added 'defaultize' deprecation warning.  Too much magic can be harmful.
 
 0.1.0:
   - First release

@@ -58,6 +58,7 @@ module Choice
       option = option.to_s
       short "-#{option[0..0].downcase}"
       long "--#{option.downcase}=#{option.upcase}"
+      Writer.puts "WARNING: Defaultize deprecated.  Please explicitly set a short and long in your option definition."
     end
 
     # The desc method is slightly special: it stores itself as an array and
