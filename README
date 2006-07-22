@@ -209,7 +209,22 @@ Assuming the same as above:
   
   $ ruby ftpd.rb --debug
   <help screen printed>
+
+=== long as array
+
+Often you may wish to allow users the ability to pass in multiple arguments and have
+them all combined into an array.  You can accomplish this by defining a +long+ and
+setting the caps-argument to *ARG.  Like this:
     
+  long '--suit *SUITS'
+
+<tt>Choice.choices.suits</tt> will now return an array.  Here's an example of usage:
+
+  $ ruby --suit hearts clubs
+  suit: ['hearts', 'clubs']
+
+Check out <tt>examples/gamble.rb</tt> for more information on this cool feature.
+
 === default
 
 You can define a default value for your option, if you'd like.  If the option
@@ -321,6 +336,25 @@ You can probably think of better uses.
 A block passed to the +action+ statement will be run if that particular option
 is passed.  See the <tt>--version</tt> example earlier.
 
+=== required options
+
+You can specify an option as being required by passing :required => true to the 
+option definition.  Choice will then print the help screen if this option is
+not present.  Please let your dear users know which options are required.
+
+For example:
+
+  option :card, :required => true do
+    short '-c'
+    long '--card CARD'
+    desc "The card you wish to gamble on.  Required.  Only one, please."
+  end
+
+Then:
+
+  $ ruby gamble.rb
+  <help screen, -c or --card wasn't passed>
+
 == Other options
 
 These statements are purely aesthetic, used to help make your <tt>--help</tt>
@@ -354,6 +388,10 @@ As in the example above, you can put separators between options to help display
 the logical groupings of your options.  Or whatever.  
 
   separator "----"
+
+To get a blank line, rock an empty string:
+
+  separator ''
 
 === footer
 
