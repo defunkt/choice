@@ -2,6 +2,8 @@
   - Fixed test_option.rb to be self sufficient.
   - Fix so that long argument with equals sign in it will parse correctly [Justin Bailey]
   - Added 'defaultize' deprecation warning.  Too much magic can be harmful.
+  - Made Choice::Writer::puts, print, and printf public, can now possibly be used by other Choice classes.
+  - Changed UnknownArgument to UnknownOption (more descriptive)
 
 0.1.0:
   - First release

@@ -191,7 +191,7 @@ class TestParser < Test::Unit::TestCase
     end
   
     args = ['-c', 'BestOfYanni', '--grace']
-    assert_raise(Choice::Parser::UnknownArgument) do
+    assert_raise(Choice::Parser::UnknownOption) do
       choices = Choice::Parser.parse(@options, args)
     end
   end

@@ -95,7 +95,7 @@ module Choice
 
         else
           # If we're here, we have no idea what the passed argument is.  Die.
-          raise UnknownArgument if arg =~ /^-/
+          raise UnknownOption if arg =~ /^-/
 
         end
       end
@@ -137,7 +137,7 @@ module Choice
     # All the possible exceptions this module can raise.
     class ParseError < Exception; end
     class HashExpectedForOption < Exception; end
-    class UnknownArgument < ParseError; end      
+    class UnknownOption < ParseError; end      
     class ArgumentRequired < ParseError; end
     class ValidateExpectsRegexp < ParseError; end
     class ArgumentValidationFails < ParseError; end
