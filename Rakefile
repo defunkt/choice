@@ -79,7 +79,7 @@ task :tag do
   warn "WARNING: this will tag svn://rubyforge.org/var/svn/choice/trunk using the tag v#{Choice::Version::MAJOR}_#{Choice::Version::MINOR}_#{Choice::Version::TINY}"
   warn "If you do not wish to continue, you have 5 seconds to cancel by pressing CTRL-C..."
   5.times { |i| print "#{5-i} "; $stdout.flush; sleep 1 }
-  system "svn copy svn+ssh://ozmm@rubyforge.org/var/svn/choice/trunk svn+ssh://ozmm@rubyforge.org/var/svn/choice/tags/v#{Choice::Version::MAJOR}_#{Choice::Version::MINOR}_#{Choice::Version::TINY} -m \"Tagging the #{Choice::Version::STRING} release\""
+  system "svn copy svn+ssh://defunkt@rubyforge.org/var/svn/choice/trunk svn+ssh://defunkt@rubyforge.org/var/svn/choice/tags/v#{Choice::Version::MAJOR}_#{Choice::Version::MINOR}_#{Choice::Version::TINY} -m \"Tagging the #{Choice::Version::STRING} release\""
 end
 
 package_name = "#{PACKAGE_NAME}-#{PACKAGE_VERSION}"
