@@ -2,6 +2,8 @@ $:.unshift "../lib:lib"
 require 'test/unit'
 require 'choice'
 
+$VERBOSE = nil
+
 class TestChoice < Test::Unit::TestCase
   
   def setup
