@@ -166,6 +166,7 @@ module Choice
         @@target
       end
 
+      public
       # Fake puts
       def puts(str = nil)
         str = '' if str.nil?
