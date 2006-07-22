@@ -11,7 +11,7 @@ module Choice
     # You can instantiate an option on its own or by passing it a name and
     # a block.  If you give it a block, it will eval() the block and set itself
     # up nicely.
-    def initialize(option = nil, &block)
+    def initialize(options = {}, &block)
       # Here we store the definitions this option contains, to make to_a and
       # to_h easier.
       @choices = []      
@@ -19,9 +19,9 @@ module Choice
       # If we got a block, eval it and set everything up.
       self.instance_eval(&block) if block_given?      
 
-      # This might be going away in the future.  If you pass nothing but a 
-      # name, Option will try and guess what you want.
-      defaultize(option) unless option.nil?      
+      # Is this option required?
+      @required = options[:required] || false
+      @choices << 'required'
     end
        
     # This is the catch all for the getter/setter choices defined in CHOICES.
@@ -52,15 +52,6 @@ module Choice
       @choices << method if args[0] || block_given? unless @choices.index(method)
     end
     
-    # Might be going away soon.  Tries to make some guesses about what you
-    # want if you instantiated Option with a name and no block.
-    def defaultize(option)
-      option = option.to_s
-      short "-#{option[0..0].downcase}"
-      long "--#{option.downcase}=#{option.upcase}"
-      Writer.puts "WARNING: Defaultize deprecated.  Please explicitly set a short and long in your option definition."
-    end
-
     # The desc method is slightly special: it stores itself as an array and
     # each subsequent call adds to that array, rather than overwriting it.
     # This is so we can do multi-line descriptions easily.
@@ -79,7 +70,7 @@ module Choice
       return false if @desc.nil?
       true
     end
-    
+
     # Returns Option converted to an array.
     def to_a
       array = []

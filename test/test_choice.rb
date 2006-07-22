@@ -9,6 +9,7 @@ class TestChoice < Test::Unit::TestCase
   def setup
     Choice.reset
     Choice.dont_exit_on_help = true
+    Choice.send(:class_variable_set, '@@choices', true)
   end
     
   def test_choices
@@ -51,7 +52,6 @@ class TestChoice < Test::Unit::TestCase
   HELP_STRING = ''
   def test_help
     Choice.output_to(HELP_STRING)
-    Choice.args = ['-m', 'lunch', '--help']
     
     Choice.options do
       banner "Usage: choice [-mu]"
@@ -70,6 +70,8 @@ class TestChoice < Test::Unit::TestCase
         desc "Your favorite eating utencil."
       end
     end
+
+    Choice.args = ['-m', 'lunch', '--help']
     
     help_string = <<-HELP
 Usage: choice [-mu]
@@ -86,7 +88,6 @@ HELP
   UNKNOWN_STRING = ''
   def test_unknown_argument
     Choice.output_to(UNKNOWN_STRING)
-    Choice.args = ['-m', 'lunch', '--motorcycles']
     
     Choice.options do
       banner "Usage: choice [-mu]"
@@ -105,6 +106,8 @@ HELP
         desc "Your favorite eating utencil."
       end
     end
+
+    Choice.args = ['-m', 'lunch', '--motorcycles']
     
     help_string = <<-HELP
 Usage: choice [-mu]
@@ -118,4 +121,39 @@ HELP
     assert_equal help_string, UNKNOWN_STRING
   end
   
+  REQUIRED_STRING = ''
+  def test_required_argument
+    Choice.output_to(REQUIRED_STRING)
+    
+    Choice.options do
+      banner "Usage: choice [-mu]"
+      header ""
+      option :meal, :required => true do
+        short '-m'
+        desc 'Your favorite meal.'
+      end
+      
+      separator ""
+      separator "And you eat it with..."
+      
+      option :utencil do
+        short "-u"
+        long "--utencil[=UTENCIL]"
+        desc "Your favorite eating utencil."
+      end
+    end
+
+    Choice.args = ['-u', 'spork']
+    
+    help_string = <<-HELP
+Usage: choice [-mu]
+
+    -m                               Your favorite meal.
+
+And you eat it with...
+    -u, --utencil[=UTENCIL]          Your favorite eating utencil.
+HELP
+    
+    assert_equal help_string, REQUIRED_STRING
+  end
 end

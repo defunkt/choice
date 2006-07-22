@@ -28,6 +28,7 @@ module Choice
       # Define local hashes we're going to use.  choices is where we store
       # the actual values we've pulled from the argument list.
       hashes, longs, required, validators, choices, arrayed = {}, {}, {}, {}, {}, {}
+      hard_required = {}
 
       # We can define these on the fly because they are all so similar.
       params = %w[short cast filter action default valid]
@@ -43,6 +44,9 @@ module Choice
         else
           raise HashExpectedForOption
         end
+
+        # Is this option required?
+        hard_required[name] = true if obj['required']
 
         # Set the local hashes if the value exists on this option object.
         params.each { |param| hashes["#{param}s"][name] = obj[param] if obj[param] }
@@ -175,6 +179,11 @@ module Choice
         choices[name] = value
       end
       
+      # Die if we're missing any required arguments
+      hard_required.each do |name, value|
+        raise ArgumentRequired unless choices[name]
+      end
+
       # Home stretch.  Go through all the defaults defined and if a choice
       # does not exist in our choices hash, set its value to the requested
       # default.

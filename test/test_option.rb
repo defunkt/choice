@@ -66,16 +66,6 @@ class TestOption < Test::Unit::TestCase
     assert_block(&@option.action)
   end
   
-  def test_default_option
-    require 'stringio'
-    $stdout = StringIO.new
-    option = Choice::Option.new('port')
-    
-    assert_equal '-p', option.short
-    assert_equal '--port=PORT', option.long
-    $stdout = STDOUT
-  end  
-  
   def test_format
     @option = Choice::Option.new do
       validate /^\w+$/

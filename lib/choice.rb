@@ -12,20 +12,17 @@ module Choice
     # The main method, which defines the options
     def options(&block)
       # Setup all instance variables
-      @@args    ||= false
+      @@args    ||= ARGV
       @@banner  ||= false
       @@header  ||= Array.new
       @@options ||= Array.new
       @@footer  ||= Array.new
       
-      # Args can be overriden, but shouldn't be
-      self.args = @@args || ARGV
-      
       # Eval the passed block to define the options.
       instance_eval(&block)
 
       # Parse what we've got.
-      parse
+      parse unless parsed?
     end
   
     # Returns a hash representing options passed in via the command line.
@@ -34,10 +31,10 @@ module Choice
     end
   
     # Defines an option.
-    def option(opt, &block)
+    def option(opt, options = {}, &block)
       # Notice: options is maintained as an array of arrays, the first element
       # the option name and the second the option object.
-      @@options << [opt.to_s, Option.new(&block)]
+      @@options << [opt.to_s, Option.new(options, &block)]
     end
     
     # Separators are text displayed by --help within the options block.
