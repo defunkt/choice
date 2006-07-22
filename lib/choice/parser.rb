@@ -30,7 +30,7 @@ module Choice
       hashes, longs, required, validators, choices = {}, {}, {}, {}, {}
 
       # We can define these on the fly because they are all so similar.
-      params = %w[short cast filter action default]
+      params = %w[short cast filter action default valid]
       params.each { |param| hashes["#{param}s"] = {} }
 
       # Inspect each option and move its info into our local hashes.
@@ -63,9 +63,16 @@ module Choice
           longs[name] = option
           required[name] = true unless argument =~ /^\[(.+)\]$/
         elsif obj['long']
+          # We can't have a long as a switch when valid is set -- die.
+          raise ArgumentRequiredWithValid if obj['valid']
+
           # Set without any checking if it's just --long
           longs[name] = obj['long']
         end
+
+        # If we were given a list of valid arguments with 'valid,' this option
+        # is definitely required.
+        required[name] = true if obj['valid']
       end
 
       # Go through the arguments and try to figure out whom they belong to
@@ -108,6 +115,9 @@ module Choice
 
         # Validate the argument if we need to.
         raise ArgumentValidationFails if validators[name] && validators[name] !~ value
+
+        # Make sure the argument is valid
+        raise InvalidArgument if hashes['valids'][name] && !hashes['valids'][name].include?(value)
         
         # Cast the argument using the method defined in the constant hash.
         value = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
@@ -141,5 +151,7 @@ module Choice
     class ArgumentRequired < ParseError; end
     class ValidateExpectsRegexp < ParseError; end
     class ArgumentValidationFails < ParseError; end
+    class InvalidArgument < ParseError; end
+    class ArgumentRequiredWithValid < ParseError; end
   end
 end

@@ -195,4 +195,40 @@ class TestParser < Test::Unit::TestCase
       choices = Choice::Parser.parse(@options, args)
     end
   end
+
+  def test_valid
+    @options['suit'] = Choice::Option.new do
+      short '-s'
+      long '--suit=SUIT'
+      valid %w[club diamond spade heart]
+      desc "The suit of your card, sir."
+    end
+
+    suit_good = 'club'
+    suit_bad = 'joker'
+    
+    args = ['-s', suit_bad]
+    assert_raise(Choice::Parser::InvalidArgument) do
+      choices = Choice::Parser.parse(@options, args)
+    end
+
+    args = ['-s', suit_good]
+    choices = Choice::Parser.parse(@options, args)
+    
+    assert_equal suit_good, choices['suit']
+  end
+
+  def test_valid_needs_argument
+    @options['pants'] = Choice::Option.new do
+      short '-p'
+      long '--pants'
+      valid %w[jeans slacks trunks boxers]
+      desc "Your preferred type of pants."
+    end
+    
+    args = ['-p']
+    assert_raise(Choice::Parser::ArgumentRequiredWithValid) do
+      choices = Choice::Parser.parse(@options, args)
+    end
+  end
 end

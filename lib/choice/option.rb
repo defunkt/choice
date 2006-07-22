@@ -6,7 +6,7 @@ module Choice
 
     # Since we define getters/setters on the fly, we need a white list of
     # which to accept.  Here's the list.
-    CHOICES = %w[short long desc default filter action cast validate]
+    CHOICES = %w[short long desc default filter action cast validate valid]
 
     # You can instantiate an option on its own or by passing it a name and
     # a block.  If you give it a block, it will eval() the block and set itself

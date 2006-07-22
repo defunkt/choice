@@ -4,6 +4,7 @@
   - Added 'defaultize' deprecation warning.  Too much magic can be harmful.
   - Made Choice::Writer::puts, print, and printf public, can now possibly be used by other Choice classes.
   - Changed UnknownArgument to UnknownOption (more descriptive)
+  - Added a 'valid' option as per bugtracker request for 'enum.'
 
 0.1.0:
   - First release
