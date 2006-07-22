@@ -163,7 +163,7 @@ end
 desc "Publish the API documentation"
 task :pubrdoc => [ :rdoc ] do
 Rake::SshDirPublisher.new(
-  "ozmm@rubyforge.org",
+  "defunkt@rubyforge.org",
   "/var/www/gforge-projects/choice/",
   "api" ).upload
 end
