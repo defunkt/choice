@@ -1,4 +1,5 @@
 $:.unshift "../lib"
+$:.unshift "lib"
 require 'choice'
 
 port = 21
@@ -33,6 +34,14 @@ Choice.options do
     desc "The number of connections to allow at once (default 5)"
     default 5
   end
+
+  option :protocol do
+    short '-l'
+    long '--protocol=PROTOCOL'
+    desc "The protocol to use (default ftp)"
+    valid %w[ftp sftp]
+    default 'ftp'
+  end
       
   option :yaml_cfg do
     long '--config=FILE'
@@ -50,7 +59,7 @@ Choice.options do
   
   option :debug do
     short '-d'
-    long '--debug'
+    long '--debug[=LEVEL]'
     desc 'Turn on debugging mode'
   end  
   
