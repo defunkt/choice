@@ -102,7 +102,7 @@ module Choice
       @@args
     end
     
-    # You can choose to not kill the script after the help screen is prtined.
+    # You can choose to not kill the script after the help screen is printed.
     def dont_exit_on_help=(val) #:nodoc:
       @@exit = true
     end

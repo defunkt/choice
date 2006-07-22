@@ -148,12 +148,12 @@ module Choice
                end.to_s
         
         # Print it out, with our newly aquired options string.
-        puts "Usage: #{program}" <<  opts
+        puts "Usage: #{program}" << opts
       end
 
       # Figure out the name of this program based on what was run.
       def program
-        if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end
+        (/(\/|\\)/ =~ $0) ? File.basename($0) : $0
       end
 
       # Set where we print.

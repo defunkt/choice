@@ -1,2 +1,5 @@
+0.1.1:
+  - Fixed test_option.rb to be self sufficient.
+
 0.1.0:
   - First release
