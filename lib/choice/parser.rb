@@ -84,10 +84,10 @@ module Choice
           # name.
           choices[hashes['shorts'].index(arg)] = value
 
-        elsif arg =~ /=/ && longs.value?(arg.split('=')[0])
+        elsif arg =~ /=/ && longs.value?((longed = arg.split('=')).first)
           # If we get a long with a = in it, grab it and the argument
           # passed to it.
-          choices[longs.index(arg.split('=')[0])] = arg.split('=')[1]
+          choices[longs.index(longed.shift)] = longed * '='
 
         elsif longs.value?(arg)
           # If we get a long with no =, just set it to true.

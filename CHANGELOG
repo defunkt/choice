@@ -1,5 +1,6 @@
 0.1.1:
   - Fixed test_option.rb to be self sufficient.
+  - Fix so that long argument with equals sign in it will parse correctly [Justin Bailey]
 
 0.1.0:
   - First release

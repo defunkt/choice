@@ -145,6 +145,22 @@ class TestParser < Test::Unit::TestCase
     assert choices['chunky']
   end
   
+  def test_long_argument_with_equals
+    @options['band'] = Choice::Option.new do
+      long '--band=BAND'
+      desc 'Your favorite band.'
+    end
+    
+    band = 'Led=Zeppelin'
+    args = ["--band=#{band}"]
+       
+    choices = nil   
+    assert_nothing_raised "Unable to parse argument with equals sign in it." do
+      choices = Choice::Parser.parse(@options, args)
+    end
+    assert_equal band, choices['band']
+  end
+  
   def test_validate
     @options['email'] = Choice::Option.new do
       short '-e'
