@@ -159,6 +159,7 @@ For the quick learners, here's the list:
 * default
 * desc
 * cast
+* valid (takes array)
 * validate (takes regex)
 * filter (takes a block)
 * action (ditto)
@@ -170,10 +171,12 @@ You can define these within your option in any order which pleases you.
 Defines the short switch for an option.  Expected to be a dash and a single
 character.
 
+  short '-s'
+
 === long
 
 Defines the long switch for an option.  Expected to be a double dash followed by
-a string, an equal sign, and another string.  No spaces.
+a string, an equal sign (or a space), and another string.
 
 There are two variants: longs where a parameter is required and longs where a 
 parameter is optional, in which case the value will be +true+ if the option is
@@ -193,12 +196,15 @@ we can do this:
   $ ruby ftpd.rb --debug=1
   debug: 1
 
+  $ ruby ftpd.rb --debug 1
+  debug: 1
+
 *Required*:
   long '--debug=LEVEL'
 
 Assuming the same as above:
 
-  $ ruby ftpd.rb --debug=1
+  $ ruby ftpd.rb --debug 1
   debug: 1
   
   $ ruby ftpd.rb --debug
@@ -220,7 +226,7 @@ will be 'info.'
   $ ftpd.rb
   debug: info
 
-  $ ftpd.rb --debug=warn
+  $ ftpd.rb --debug warn
   debug: warn
 
 === desc
@@ -244,6 +250,8 @@ By default, all members of the <tt>Choice.choices</tt> hash are strings.  If
 you want something different, like an Integer for a port number, you can use 
 the +cast+ statement.
 
+  cast Integer
+
 Currently support +cast+ options:
 
 * Integer
@@ -252,6 +260,22 @@ Currently support +cast+ options:
 * Symbol
 
 We'll probably add Date, Time, and DateTime in the future, if people want them.
+
+=== valid
+
+Giving +valid+ an array creates a whitelist of acceptable arguments.
+
+  valid %w[clubs hearts spades diamonds]
+
+If our option is passed anything other than one of the four card suits, the help
+screen will be printed.  It might be a good idea to include acceptable arguments in
+your option's "desc" value.
+
+  $ ruby gamble.rb -s clubs
+  suit: clubs
+
+  $ ruby gamble.rb -s joker
+  <help screen printed>
 
 === validate
 
@@ -264,7 +288,7 @@ be printed.  I love ports, so let's stick with that example:
 Of course, 2100 matches this:
 
   $ ruby ftpd.rb -p 2100
-  port: 21000
+  port: 2100
 
 I like dogs.  I wish dogs could be ports.  Alas, Choice knows better (once
 I've told it so):
@@ -315,20 +339,28 @@ options defined:
 You can pass any string to the +banner+ statement to override what prints.  This
 might be useful if you're into ascii art.
 
+  banner "Usage: ftpd.rb"
+
 === header
 
 The header is what shows up after the banner but before your option definitions
 are printed.  Each header call is a newline.  Check out the example above.
+
+  header "ftp is a harsh and unforgiving protocol."
 
 === separator
 
 As in the example above, you can put separators between options to help display
 the logical groupings of your options.  Or whatever.  
 
+  separator "----"
+
 === footer
 
 The footer is displayed after all your options are displayed.  Nothing new 
 here, works like the other options above.
+
+  footer "That's all there is to it!"
 
 == It looks like poetry
 
@@ -345,3 +377,9 @@ This'll run the unit tests.  Also, if you would, send me a bit of information
 on your platform.  Choice was tested on OS X and RHEL with a 2.4 kernel but who 
 knows.  Thanks a lot.
 
+== Thanks to
+
+For bug reports, patches, and ideas I'd be honored to thank the following:
+
+- Justin Bailey
+- Alexis Li

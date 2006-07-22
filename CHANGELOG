@@ -9,6 +9,7 @@
   - Added list format to options as per bug tracker suggestion in the format of --long=*LONG [Alexis Li]
   - Added --long ARG format.  Works with --long [ARG] and --long *ARG and --long [*ARG]
   - Added :required option which insists an option is present.
+  - Added gamble.rb card game example.
 
 0.1.0:
   - First release
