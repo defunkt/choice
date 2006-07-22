@@ -5,6 +5,7 @@
   - Made Choice::Writer::puts, print, and printf public, can now possibly be used by other Choice classes.
   - Changed UnknownArgument to UnknownOption (more descriptive)
   - Added a 'valid' option as per bugtracker request for 'enum.'
+  - Change --long=[ARG] optional format to --long[=ARG] but keep around old format just in case.
 
 0.1.0:
   - First release

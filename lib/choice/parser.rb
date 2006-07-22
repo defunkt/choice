@@ -57,10 +57,19 @@ module Choice
         
         # Parse the long option. If it contains a =, figure out if the 
         # argument is required or optional.  Optional arguments are formed
-        # like [ARG], whereas required are just ARG (in --long=ARG style).
-        if obj['long'] && obj['long'] =~ /=/
-          option, argument = obj['long'].split('=')
+        # like [=ARG], whereas required are just ARG (in --long=ARG style).
+        if obj['long'] && obj['long'] =~ /(=|\[)/
+          # Save the separator we used, as we're gonna need it, then split
+          sep = $1
+          option, *argument = obj['long'].split(sep)
+
           longs[name] = option
+
+          # Preserve the original argument, as it may contain [ or =,
+          # by joining with the character we split on.  Add a [ in front if
+          # we split on that.
+          argument = (sep == '[' ? '[' : '') << Array(argument).join(sep)
+
           required[name] = true unless argument =~ /^\[(.+)\]$/
         elsif obj['long']
           # We can't have a long as a switch when valid is set -- die.

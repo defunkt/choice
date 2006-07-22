@@ -85,7 +85,7 @@ class TestParser < Test::Unit::TestCase
     end
     @options['age'] = Choice::Option.new do
       short '-a'
-      long 'age=[AGE]'
+      long 'age[=AGE]'
       cast Integer
     end
     
@@ -97,6 +97,24 @@ class TestParser < Test::Unit::TestCase
   end
   
   def test_text_optional
+    @options['color'] = Choice::Option.new do
+      short '-c'
+      long '--color[=COLOR]'
+    end
+    
+    args = ['-c']
+    choices = Choice::Parser.parse(@options, args)
+    
+    assert choices['color']
+    
+    color = 'ladyblue'
+    args = ['-c', color]
+    choices = Choice::Parser.parse(@options, args)
+    
+    assert_equal color, choices['color']
+  end
+
+  def test_text_optional_deprecated
     @options['color'] = Choice::Option.new do
       short '-c'
       long '--color=[COLOR]'
@@ -143,22 +161,6 @@ class TestParser < Test::Unit::TestCase
     choices = Choice::Parser.parse(@options, args)
     
     assert choices['chunky']
-  end
-  
-  def test_long_argument_with_equals
-    @options['band'] = Choice::Option.new do
-      long '--band=BAND'
-      desc 'Your favorite band.'
-    end
-    
-    band = 'Led=Zeppelin'
-    args = ["--band=#{band}"]
-       
-    choices = nil   
-    assert_nothing_raised "Unable to parse argument with equals sign in it." do
-      choices = Choice::Parser.parse(@options, args)
-    end
-    assert_equal band, choices['band']
   end
   
   def test_validate
