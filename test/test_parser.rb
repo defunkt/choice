@@ -233,4 +233,70 @@ class TestParser < Test::Unit::TestCase
       choices = Choice::Parser.parse(@options, args)
     end
   end
+
+  def test_long_as_array
+    @options['medium'] = Choice::Option.new do
+      short '-m'
+      long '--medium=*MEDIUM'
+      desc "The medium(s) you like best."
+    end
+
+    mediums = %w[canvas stone steel]
+
+    args = ['-m', mediums.first, '-m',  mediums[1], '-m', mediums.last]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal mediums, choices['medium']
+
+    args = ['-m', mediums.first, mediums[1], mediums.last]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal mediums, choices['medium']
+
+    args = ["--medium=#{mediums.first}", "--medium=#{mediums[1]}", "--medium=#{mediums.last}"]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal mediums, choices['medium']
+
+    args = ["--medium=#{mediums.first}", mediums[1], mediums.last]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal mediums, choices['medium']
+  end
+
+  def test_long_as_array_optional
+    @options['instruments'] = Choice::Option.new do
+      short '-i'
+      long '--instruments[=*INSTRUMENTS]'
+      desc "Do you like instruments?  Which ones do you like best?"
+    end
+
+    instruments = %w[xylophone guitar piano]
+
+    args = ["--instruments=#{instruments.first}", "--instruments=#{instruments[1]}", 
+            "--instruments=#{instruments.last}"]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal instruments, choices['instruments']
+
+    args = %w[--instruments]
+    choices = Choice::Parser.parse(@options, args)
+    assert_equal true, choices['instruments']
+  end
+
+  def test_long_as_array_with_valid
+    @options['suits'] = Choice::Option.new do
+      short '-s'
+      long '--suits=*SUITS'
+      valid %w[club diamond spade heart]
+      desc "The suits of your deck, sir."
+    end
+
+    suits = %w[spade heart]
+
+    args = ['-s', suits.first, suits.last]
+    choices = Choice::Parser.parse(@options, args)
+    
+    assert_equal suits, choices['suits']
+    
+    args = ['-s', suits.first, 'notasuit']
+    assert_raise(Choice::Parser::InvalidArgument) do
+      choices = Choice::Parser.parse(@options, args)
+    end
+  end
 end

@@ -27,7 +27,7 @@ module Choice
       
       # Define local hashes we're going to use.  choices is where we store
       # the actual values we've pulled from the argument list.
-      hashes, longs, required, validators, choices = {}, {}, {}, {}, {}
+      hashes, longs, required, validators, choices, arrayed = {}, {}, {}, {}, {}, {}
 
       # We can define these on the fly because they are all so similar.
       params = %w[short cast filter action default valid]
@@ -63,6 +63,7 @@ module Choice
           sep = $1
           option, *argument = obj['long'].split(sep)
 
+          # The actual name of the long switch
           longs[name] = option
 
           # Preserve the original argument, as it may contain [ or =,
@@ -70,7 +71,11 @@ module Choice
           # we split on that.
           argument = (sep == '[' ? '[' : '') << Array(argument).join(sep)
 
-          required[name] = true unless argument =~ /^\[(.+)\]$/
+          # Do we expect multiple arguments which get turned into an array?
+          arrayed[name] = true if argument =~ /^\[?=?\*(.+)\]?$/
+         
+          # Is this long required or optional?
+          required[name] = true unless argument =~ /^\[=?\*?(.+)\]$/
         elsif obj['long']
           # We can't have a long as a switch when valid is set -- die.
           raise ArgumentRequiredWithValid if obj['valid']
@@ -97,13 +102,28 @@ module Choice
           value = true if !value || value =~ /^-/
 
           # Add this value to the choices hash with the key of the option's
-          # name.
-          choices[hashes['shorts'].index(arg)] = value
+          # name.  If we expect an array, tack this argument on.
+          name = hashes['shorts'].index(arg)
+          if arrayed[name]
+            choices[name] ||= []
+            choices[name]  += arrayize_arguments(name, args[i+1..-1])
+          else
+            choices[name] = value
+          end
 
         elsif arg =~ /=/ && longs.value?((longed = arg.split('=')).first)
           # If we get a long with a = in it, grab it and the argument
           # passed to it.
-          choices[longs.index(longed.shift)] = longed * '='
+          name = longs.index(longed.shift)
+
+          # If we expect an array, tack this argument on.
+          if arrayed[name]
+            choices[name] ||= []
+            choices[name] << longed * '='
+            choices[name] += arrayize_arguments(name, args[i+1..-1])
+          else
+            choices[name] = longed * '='
+          end
 
         elsif longs.value?(arg)
           # If we get a long with no =, just set it to true.
@@ -126,7 +146,7 @@ module Choice
         raise ArgumentValidationFails if validators[name] && validators[name] !~ value
 
         # Make sure the argument is valid
-        raise InvalidArgument if hashes['valids'][name] && !hashes['valids'][name].include?(value)
+        raise InvalidArgument unless value.to_a.all? { |v| hashes['valids'][name].include?(v) } if hashes['valids'][name] 
         
         # Cast the argument using the method defined in the constant hash.
         value = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
@@ -151,6 +171,19 @@ module Choice
       
       # Return the choices hash.
       choices
+    end
+
+  private
+    # Turns trailing command line arguments into an array for an arrayed value
+    def self.arrayize_arguments(name, args)
+      # Go through trailing arguments and suck them in if they don't seem
+      # to have an owner.
+      array = []
+      potential_args = args.dup 
+      until (arg = potential_args.shift) =~ /^-/ || arg.nil?
+        array << arg
+      end
+      array
     end
     
     # All the possible exceptions this module can raise.
