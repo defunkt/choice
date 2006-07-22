@@ -66,7 +66,7 @@ class TestChoice < Test::Unit::TestCase
       
       option :utencil do
         short "-u"
-        long "--utencil=[UTENCIL]"
+        long "--utencil[=UTENCIL]"
         desc "Your favorite eating utencil."
       end
     end
@@ -77,7 +77,7 @@ Usage: choice [-mu]
     -m                               Your favorite meal.
 
 And you eat it with...
-    -u, --utencil=[UTENCIL]          Your favorite eating utencil.
+    -u, --utencil[=UTENCIL]          Your favorite eating utencil.
 HELP
 
     assert_equal help_string, HELP_STRING
@@ -101,7 +101,7 @@ HELP
       
       option :utencil do
         short "-u"
-        long "--utencil=[UTENCIL]"
+        long "--utencil[=UTENCIL]"
         desc "Your favorite eating utencil."
       end
     end
@@ -112,7 +112,7 @@ Usage: choice [-mu]
     -m                               Your favorite meal.
 
 And you eat it with...
-    -u, --utencil=[UTENCIL]          Your favorite eating utencil.
+    -u, --utencil[=UTENCIL]          Your favorite eating utencil.
 HELP
     
     assert_equal help_string, UNKNOWN_STRING
