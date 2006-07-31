@@ -53,10 +53,14 @@ module Choice
         
         # If there is a validate statement, save it as a regex.
         # If it's present but can't pull off a to_s (wtf?), raise an error.
-        if obj['validate'] && obj['validate'].respond_to?(:to_s)
-          validators[name] = Regexp.new(obj['validate'].to_s)
-        elsif obj['validate']
-          raise ValidateExpectsRegexp
+        if obj['validate'] 
+          validators[name] = case obj['validate']
+                             when Proc
+                               obj['validate']
+                             when Regexp, String
+                               Regexp.new(obj['validate'].to_s)
+                             else raise ValidateExpectsRegexpOrBlock
+                             end
         end
         
         # Parse the long option. If it contains a =, figure out if the 
@@ -159,8 +163,13 @@ module Choice
         # Check to make sure we have all the required arguments.
         raise ArgumentRequired if required[name] && value === true
 
-        # Validate the argument if we need to.
-        raise ArgumentValidationFails if validators[name] && validators[name] !~ value
+        # Validate the argument if we need to, against a regexp or a block.
+        if validators[name]
+          if validators[name].is_a?(Regexp) && validators[name] =~ value 
+          elsif validators[name].is_a?(Proc) && validators[name].call(value)
+          else raise ArgumentValidationFails 
+          end
+        end
 
         # Make sure the argument is valid
         raise InvalidArgument unless value.to_a.all? { |v| hashes['valids'][name].include?(v) } if hashes['valids'][name] 
@@ -213,7 +222,7 @@ module Choice
     class HashExpectedForOption < Exception; end
     class UnknownOption < ParseError; end      
     class ArgumentRequired < ParseError; end
-    class ValidateExpectsRegexp < ParseError; end
+    class ValidateExpectsRegexpOrBlock < ParseError; end
     class ArgumentValidationFails < ParseError; end
     class InvalidArgument < ParseError; end
     class ArgumentRequiredWithValid < ParseError; end

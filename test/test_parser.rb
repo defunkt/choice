@@ -163,7 +163,7 @@ class TestParser < Test::Unit::TestCase
     assert choices['chunky']
   end
   
-  def test_validate
+  def test_validate_regexp
     @options['email'] = Choice::Option.new do
       short '-e'
       long '--email=EMAIL'
@@ -185,6 +185,30 @@ class TestParser < Test::Unit::TestCase
     assert_equal email_good, choices['email']
   end
   
+  def test_validate_block
+    @options['file'] = Choice::Option.new do
+      short '-f'
+      long '--file=FILE'
+      desc 'Your valid email addy.'
+      validate do |arg|
+        File.exists? arg
+      end
+    end
+
+    file_bad = 'not_a_file.rb'
+    file_good = __FILE__
+    
+    args = ['-f', file_bad]
+    assert_raise(Choice::Parser::ArgumentValidationFails) do
+      choices = Choice::Parser.parse(@options, args)
+    end
+
+    args = ['-f', file_good]
+    choices = Choice::Parser.parse(@options, args)
+    
+    assert_equal file_good, choices['file']
+  end
+
   def test_unknown_argument
     @options['cd'] = Choice::Option.new do
       short '-c'

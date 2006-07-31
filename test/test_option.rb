@@ -72,6 +72,13 @@ class TestOption < Test::Unit::TestCase
     end
     
     assert_equal /^\w+$/, @option.validate
+
+    block = proc { |f| File.exists? f }
+    @option = Choice::Option.new do
+      validate &block
+    end
+
+    assert_equal block, @option.validate
   end  
   
   def test_dsl
