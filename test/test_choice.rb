@@ -7,7 +7,7 @@ $VERBOSE = nil
 class TestChoice < Test::Unit::TestCase
   
   def setup
-    Choice.reset
+    Choice.reset!
     Choice.dont_exit_on_help = true
     Choice.send(:class_variable_set, '@@choices', true)
   end
@@ -155,5 +155,29 @@ And you eat it with...
 HELP
     
     assert_equal help_string, REQUIRED_STRING
+  end
+
+  def test_shorthand_choices
+    Choice.options do
+      header "Tell me about yourself?"
+      header ""
+      options :band => { :short => "-b", :long => "--band=BAND", :cast => String, :desc => "Your favorite band.",
+                        :validate => /\w+/ },
+              :animal => { :short => "-a", :long => "--animal=ANIMAL", :cast => String, :desc => "Your favorite animal." }
+      
+      footer ""
+      footer "--help This message"
+    end
+    
+    band = 'LedZeppelin'
+    animal = 'Reindeer'
+    
+    args = ['-b', band, "--animal=#{animal}"]
+    Choice.args = args
+    
+    assert_equal band, Choice.choices['band']
+    assert_equal animal, Choice.choices[:animal]
+    assert_equal ["Tell me about yourself?", ""], Choice.header
+    assert_equal ["", "--help This message"], Choice.footer
   end
 end

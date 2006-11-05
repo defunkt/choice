@@ -17,7 +17,7 @@ module Choice
       @choices = []      
 
       # If we got a block, eval it and set everything up.
-      self.instance_eval(&block) if block_given?      
+      instance_eval(&block) if block_given?      
 
       # Is this option required?
       @required = options[:required] || false
@@ -28,17 +28,16 @@ module Choice
     # It also gives us choice? methods.
     def method_missing(method, *args, &block)
       # Get the name of the choice we want, as a class variable string.
-      var = "@#{method.to_s.sub(/\?/,'')}"
+      var = "@#{method.to_s.sub('?','')}"
 
       # To string, for regex purposes.
       method = method.to_s
       
       # Don't let in any choices not defined in our white list array.
-      raise ParseError, "I don't know '#{method}'" unless CHOICES.include? method.sub(/\?/,'')
+      raise ParseError, "I don't know `#{method}'" unless CHOICES.include? method.sub('?','')
       
       # If we're asking a question, give an answer.  Like 'short?'.
-      return true if method =~ /\?/ && instance_variable_get(var)
-      return false if method =~ /\?/
+      return !!instance_variable_get(var) if method =~ /\?/ 
       
       # If we were called with no arguments, we want a get.
       return instance_variable_get(var) unless args[0] || block_given?
@@ -66,27 +65,22 @@ module Choice
     end
     
     # Simple, desc question method.
-    def desc?
-      return false if @desc.nil?
-      true
-    end
+    def desc?() !!@desc end
 
     # Returns Option converted to an array.
     def to_a
-      array = []
-      @choices.each do |choice|
-        array << instance_variable_get("@#{choice}") if @choices.include? choice
+      @choices.inject([]) do |array, choice|
+        return array unless @choices.include? choice
+        array + [instance_variable_get("@#{choice}")]
       end
-      array
     end
     
     # Returns Option converted to a hash.
     def to_h
-      hash = {}
-      @choices.each do |choice|
-        hash[choice] = instance_variable_get("@#{choice}") if @choices.include? choice
+      @choices.inject({}) do |hash, choice|
+        return hash unless @choices.include? choice
+        hash.merge choice => instance_variable_get("@#{choice}") 
       end
-      hash
     end
     
     # In case someone tries to use a method we don't know about in their 

@@ -5,7 +5,7 @@ require 'choice/option'
 
 class TestOption < Test::Unit::TestCase
   def setup
-    Choice.reset
+    Choice.reset!
     @option = Choice::Option.new
   end
   
@@ -115,10 +115,10 @@ class TestOption < Test::Unit::TestCase
         
     assert_equal Choice::Option, @option.class
     assert_equal Array, array.class
-    assert array.include?([desc])
-    assert array.include?(short)
-    assert array.include?(long)
-    assert array.include?(default)
+    assert array.include? [desc]
+    assert array.include? short
+    assert array.include? long
+    assert array.include? default
     assert_equal proc { 1 + 1 }.call, array.select { |a| a.is_a? Proc }.first.call
   end
   

@@ -5,7 +5,7 @@ require 'choice'
 class TestWriter < Test::Unit::TestCase
   
   def setup
-    Choice.reset
+    Choice.reset!
   end
   
   HELP_OUT = ''

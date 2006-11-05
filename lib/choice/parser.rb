@@ -3,6 +3,7 @@ module Choice
   # The parser takes our option definitions and our arguments and produces
   # a hash of values.
   module Parser #:nodoc: all
+    extend self
     
     # What method to call on an object for each given 'cast' value.
     CAST_METHODS = { Integer => :to_i, String => :to_s, Float => :to_f,
@@ -13,13 +14,13 @@ module Choice
     # the option's name and the second element being a hash of the option's
     # info.  You also pass in your current arguments, so it knows what to
     # check against.
-    def self.parse(options, args)
+    def parse(options, args)
       # Return empty hash if the parsing adventure would be fruitless.
       return {} if options.nil? || !options || args.nil? || !args.is_a?(Array)
       
       # If we are passed an array, make the best of it by converting it
       # to a hash.
-      if options.is_a?(Array)
+      if options.is_a? Array
         new_options = {}
         options.each { |o| new_options[o[0]] = o[1] if o.is_a?(Array) }
         options = new_options
@@ -39,11 +40,8 @@ module Choice
         name = name.to_s
 
         # Only take hashes or hash-like duck objects.
-        if obj.respond_to?(:to_h)
-          obj = obj.to_h 
-        else
-          raise HashExpectedForOption
-        end
+        raise HashExpectedForOption unless obj.respond_to? :to_h
+        obj = obj.to_h 
 
         # Is this option required?
         hard_required[name] = true if obj['required']
@@ -53,15 +51,11 @@ module Choice
         
         # If there is a validate statement, save it as a regex.
         # If it's present but can't pull off a to_s (wtf?), raise an error.
-        if obj['validate'] 
-          validators[name] = case obj['validate']
-                             when Proc
-                               obj['validate']
-                             when Regexp, String
-                               Regexp.new(obj['validate'].to_s)
-                             else raise ValidateExpectsRegexpOrBlock
-                             end
-        end
+        validators[name] = case obj['validate']
+                           when Proc then obj['validate']
+                           when Regexp, String then Regexp.new(obj['validate'].to_s)
+                           else raise ValidateExpectsRegexpOrBlock
+                           end if obj['validate'] 
         
         # Parse the long option. If it contains a =, figure out if the 
         # argument is required or optional.  Optional arguments are formed
@@ -153,7 +147,6 @@ module Choice
         else
           # If we're here, we have no idea what the passed argument is.  Die.
           raise UnknownOption if arg =~ /^-/
-
         end
       end
 
@@ -206,7 +199,7 @@ module Choice
 
   private
     # Turns trailing command line arguments into an array for an arrayed value
-    def self.arrayize_arguments(name, args)
+    def arrayize_arguments(name, args)
       # Go through trailing arguments and suck them in if they don't seem
       # to have an owner.
       array = []
