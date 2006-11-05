@@ -161,7 +161,7 @@ HELP
     Choice.options do
       header "Tell me about yourself?"
       header ""
-      options :band => { :short => "-b", :long => "--band=BAND", :cast => String, :desc => "Your favorite band.",
+      options :band => { :short => "-b", :long => "--band=BAND", :cast => String, :desc => ["Your favorite band.", "Something cool."],
                         :validate => /\w+/ },
               :animal => { :short => "-a", :long => "--animal=ANIMAL", :cast => String, :desc => "Your favorite animal." }
       

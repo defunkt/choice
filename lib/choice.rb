@@ -30,7 +30,9 @@ module Choice
   def options_from_hash(options_hash)
     options_hash.each do |name, definition|
       option = Option.new
-      definition.each { |key, value| option.send(key, value) }
+      definition.each do |key, value| 
+        Array(value).each { |hit| option.send(key, hit) }
+      end
       @@options << [name.to_s, option]
     end
   end
