@@ -5,9 +5,8 @@ works awesomely with Highline[http://highline.rubyforge.org/] or other command
 line interface libraries.
 
 Choice was written by Chris Wanstrath as an exercise in test driving development 
-of a DSL.  We hope you find it useful.  If you don't, we'd love to hear why.  
-This project is still an infant: bugs are expected and tattling on them is 
-appreciated.  
+of a DSL.  This project is still an infant: bugs are expected and tattling on them 
+is appreciated.  
 
 Installing is easy, with RubyGems.  Give it a shot:
  $ gem install choice
@@ -399,6 +398,25 @@ The footer is displayed after all your options are displayed.  Nothing new
 here, works like the other options above.
 
   footer "That's all there is to it!"
+
+== Shorthand
+
+Now that you've gone through all the hard stuff, here's the easy stuff: Choice 
+options can be defined with a simple hash if you'd like.  Here's an example,
+from the tests:
+
+   Choice.options do
+     header "Tell me about yourself?"
+     header ""
+     options :band => { :short => "-b", :long => "--band=BAND", :cast => String, :desc => "Your favorite band.",
+                       :validate => /\w+/ },
+             :animal => { :short => "-a", :long => "--animal=ANIMAL", :cast => String, :desc => "Your favorite animal." }
+     
+     footer ""
+     footer "--help This message"
+   end
+
+How's that tickle you?  Real nice.
 
 == It looks like poetry
 

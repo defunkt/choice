@@ -19,7 +19,6 @@ end
 
 PACKAGE_FILES = FileList.new do |fl|
   fl.include "CHANGELOG", "README", "LICENSE"
-#  fl.include "#{PACKAGE_NAME}.gemspec", "setup.rb"
   fl.include SOURCE_FILES
 end
 
