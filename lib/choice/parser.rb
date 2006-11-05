@@ -20,11 +20,9 @@ module Choice
       
       # If we are passed an array, make the best of it by converting it
       # to a hash.
-      if options.is_a? Array
-        new_options = {}
-        options.each { |o| new_options[o[0]] = o[1] if o.is_a?(Array) }
-        options = new_options
-      end
+      options = options.inject({}) do |hash, value|
+        value.is_a?(Array) ? hash.merge(value.first => value[1]) : hash
+      end if options.is_a? Array
       
       # Define local hashes we're going to use.  choices is where we store
       # the actual values we've pulled from the argument list.

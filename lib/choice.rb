@@ -12,8 +12,11 @@ module Choice
 
   # The main method, which defines the options
   def options(hash = {}, &block)
+    # if we are passing in a hash to define our options, use that straight
+    options_from_hash(hash) unless hash.empty?
+
     # Setup all instance variables
-    reset!
+    reset! if hash.empty?
     @@args ||= ARGV
     
     # Eval the passed block to define the options.
@@ -21,6 +24,15 @@ module Choice
 
     # Parse what we've got.
     parse unless parsed?
+  end
+
+  # Set options from a hash, shorthand style
+  def options_from_hash(options_hash)
+    options_hash.each do |name, definition|
+      option = Option.new
+      definition.each { |key, value| option.send(key, value) }
+      @@options << [name.to_s, option]
+    end
   end
 
   # Returns a hash representing options passed in via the command line.
