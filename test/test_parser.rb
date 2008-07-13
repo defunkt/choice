@@ -26,7 +26,7 @@ class TestParser < Test::Unit::TestCase
     
     args = ['-b', band, "--animal=#{animal}"]
           
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal band, choices['band']
     assert_equal animal, choices['animal']
@@ -45,7 +45,7 @@ class TestParser < Test::Unit::TestCase
     
     args = []
     
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal 'PibbJr', choices['soda']
   end
@@ -60,7 +60,7 @@ class TestParser < Test::Unit::TestCase
     end     
     host = 'de.fun.kt'
     args = ['-h', host]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal 'defunct', choices['host']
   end 
@@ -73,7 +73,7 @@ class TestParser < Test::Unit::TestCase
     
     port = '3000'
     args = ['-p', port]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal port.to_i, choices['port']
   end
@@ -92,7 +92,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-n', '-a', '21']
     
     assert_raise(Choice::Parser::ArgumentRequired) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
   end
   
@@ -103,13 +103,13 @@ class TestParser < Test::Unit::TestCase
     end
     
     args = ['-c']
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert choices['color']
     
     color = 'ladyblue'
     args = ['-c', color]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal color, choices['color']
   end
@@ -121,13 +121,13 @@ class TestParser < Test::Unit::TestCase
     end
     
     args = ['-c']
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert choices['color']
     
     color = 'ladyblue'
     args = ['-c', color]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal color, choices['color']
   end
@@ -145,7 +145,7 @@ class TestParser < Test::Unit::TestCase
     end]
     
     args = ['-m', 'onebutton']
-    choices = Choice::Parser.parse([options.first, '----', options.last], args)
+    choices, rest = Choice::Parser.parse([options.first, '----', options.last], args)
     
     assert choices['mouse']
     assert_equal 1, choices.size
@@ -158,7 +158,7 @@ class TestParser < Test::Unit::TestCase
     end
 
     args = ['--bacon']
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert choices['chunky']
   end
@@ -176,11 +176,11 @@ class TestParser < Test::Unit::TestCase
     
     args = ['-e', email_bad]
     assert_raise(Choice::Parser::ArgumentValidationFails) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
 
     args = ['-e', email_good]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal email_good, choices['email']
   end
@@ -200,11 +200,11 @@ class TestParser < Test::Unit::TestCase
     
     args = ['-f', file_bad]
     assert_raise(Choice::Parser::ArgumentValidationFails) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
 
     args = ['-f', file_good]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal file_good, choices['file']
   end
@@ -218,7 +218,7 @@ class TestParser < Test::Unit::TestCase
   
     args = ['-c', 'BestOfYanni', '--grace']
     assert_raise(Choice::Parser::UnknownOption) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
   end
 
@@ -235,11 +235,11 @@ class TestParser < Test::Unit::TestCase
     
     args = ['-s', suit_bad]
     assert_raise(Choice::Parser::InvalidArgument) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
 
     args = ['-s', suit_good]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal suit_good, choices['suit']
   end
@@ -254,7 +254,7 @@ class TestParser < Test::Unit::TestCase
     
     args = ['-p']
     assert_raise(Choice::Parser::ArgumentRequiredWithValid) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
   end
 
@@ -268,19 +268,19 @@ class TestParser < Test::Unit::TestCase
     mediums = %w[canvas stone steel]
 
     args = ['-m', mediums.first, '-m',  mediums[1], '-m', mediums.last]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal mediums, choices['medium']
 
     args = ['-m', mediums.first, mediums[1], mediums.last]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal mediums, choices['medium']
 
     args = ["--medium=#{mediums.first}", "--medium=#{mediums[1]}", "--medium=#{mediums.last}"]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal mediums, choices['medium']
 
     args = ["--medium=#{mediums.first}", mediums[1], mediums.last]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal mediums, choices['medium']
   end
 
@@ -295,11 +295,11 @@ class TestParser < Test::Unit::TestCase
 
     args = ["--instruments=#{instruments.first}", "--instruments=#{instruments[1]}", 
             "--instruments=#{instruments.last}"]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal instruments, choices['instruments']
 
     args = %w[--instruments]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal true, choices['instruments']
   end
 
@@ -314,13 +314,13 @@ class TestParser < Test::Unit::TestCase
     suits = %w[spade heart]
 
     args = ['-s', suits.first, suits.last]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal suits, choices['suits']
     
     args = ['-s', suits.first, 'notasuit']
     assert_raise(Choice::Parser::InvalidArgument) do
-      choices = Choice::Parser.parse(@options, args)
+      choices, rest = Choice::Parser.parse(@options, args)
     end
   end
 
@@ -334,7 +334,7 @@ class TestParser < Test::Unit::TestCase
     donut = 'long-john'
 
     args = ['--donut', donut]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     
     assert_equal donut, choices['donut']
   end
@@ -349,11 +349,11 @@ class TestParser < Test::Unit::TestCase
     donut = 'chocolate'
 
     args = ['--donut', donut]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal donut, choices['donut']
 
     args = ['--donut']
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal true, choices['donut']
   end
 
@@ -367,7 +367,22 @@ class TestParser < Test::Unit::TestCase
     donuts = %w[glazed cream-filled]
 
     args = ['--donuts', donuts.first, donuts.last]
-    choices = Choice::Parser.parse(@options, args)
+    choices, rest = Choice::Parser.parse(@options, args)
     assert_equal donuts, choices['donuts']
+  end
+  
+  def test_long_with_rest
+    @options['donut'] = Choice::Option.new do
+      short '-d'
+      long '--donut [DONUT]'
+      desc "Your favorite donut style."
+    end
+
+    donut = 'chocolate'
+
+    args = ['eat', '--donut', donut]
+    choices, rest = Choice::Parser.parse(@options, args)
+    assert_equal donut, choices['donut']
+    assert_equal ['eat'], rest
   end
 end

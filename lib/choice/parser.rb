@@ -18,6 +18,9 @@ module Choice
       # Return empty hash if the parsing adventure would be fruitless.
       return {} if options.nil? || !options || args.nil? || !args.is_a?(Array)
       
+      # Operate on a copy of the inputs
+      args = args.dup
+      
       # If we are passed an array, make the best of it by converting it
       # to a hash.
       options = options.inject({}) do |hash, value|
@@ -83,53 +86,53 @@ module Choice
         # is definitely required.
         required[name] = true if obj['valid']
       end
-
+      
+      rest = []
+      
       # Go through the arguments and try to figure out whom they belong to
       # at this point.
-      args.each_with_index do |arg, i|
+      while arg = args.shift
         if hashes['shorts'].value?(arg)
           # Set the value to the next element in the args array since
           # this is a short.
-          value = args[i+1]
 
-          # If the next element doesn't exist or starts with a -, make this
-          # value true.
-          value = true if !value || value =~ /^-/
+          # If the next argument isn't a value, set this value to true
+          if args.empty? || args.first.match(/^-/)
+            value = true
+          else
+            value = args.shift
+          end
 
           # Add this value to the choices hash with the key of the option's
           # name.  If we expect an array, tack this argument on.
           name = hashes['shorts'].index(arg)
           if arrayed[name]
             choices[name] ||= []
-            choices[name]  += arrayize_arguments(name, args[i+1..-1])
+            choices[name] << value unless value.nil?
+            choices[name]  += arrayize_arguments(args)
           else
             choices[name] = value
           end
 
-        elsif /^(--[^=]+)=?/ =~ arg && longs.value?($1)
+        elsif (m = arg.match(/^(--[^=]+)=?/)) && longs.value?(m[1])
           # The joke here is we always accept both --long=VALUE and --long VALUE.
           
           # Grab values from --long=VALUE format
-          if arg =~ /=/ && longs.value?((longed = arg.split('=')).first)
-            name  = longs.index(longed.shift)
-            value = longed * '='
-            # For the arrayed options.
-            potential_args = args[i+1..-1]
-          else
+          name, value = arg.split('=', 2)
+          name = longs.index(name)
+          
+          if value.nil? && args.first !~ /^-/
             # Grab value otherwise if not in --long=VALUE format.  Assume --long VALUE.
-            name = longs.index(arg)
             # Value is nil if we don't have a = and the next argument is no good
-            value = args[i+1] =~ /^-/ ? nil : args[i+1] 
-            # For the arrayed options.
-            potential_args = args[i+2..-1]
+            value = args.shift
           end
 
           # If we expect an array, tack this argument on.
-          if arrayed[name] && !value.nil?
+          if arrayed[name]
             # If this is arrayed and the value isn't nil, set it.
             choices[name] ||= []
-            choices[name] << value
-            choices[name] += arrayize_arguments(name, potential_args)
+            choices[name] << value unless value.nil?
+            choices[name] += arrayize_arguments(args)
           else
             # If we set the value to nil, that means nothing was set and we
             # need to set the value to true.  We'll find out later if that's 
@@ -139,7 +142,11 @@ module Choice
 
         else
           # If we're here, we have no idea what the passed argument is.  Die.
-          raise UnknownOption if arg =~ /^-/
+          if arg =~ /^-/
+            raise UnknownOption 
+          else
+            rest << arg
+          end
         end
       end
 
@@ -159,10 +166,10 @@ module Choice
 
         # Make sure the argument is valid
         raise InvalidArgument unless value.to_a.all? { |v| hashes['valids'][name].include?(v) } if hashes['valids'][name] 
-        
+
         # Cast the argument using the method defined in the constant hash.
         value = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)
-        
+
         # Run the value through a filter and re-set it with the return.
         value = hashes['filters'][name].call(value) if hashes['filters'].include?(name)
 
@@ -186,19 +193,18 @@ module Choice
         choices[name] = value unless choices[name]
       end
       
-      # Return the choices hash.
-      choices
+      # Return the choices hash and the rest of the args
+      [ choices, rest ]
     end
 
   private
     # Turns trailing command line arguments into an array for an arrayed value
-    def arrayize_arguments(name, args)
+    def arrayize_arguments(args)
       # Go through trailing arguments and suck them in if they don't seem
       # to have an owner.
       array = []
-      potential_args = args.dup 
-      until (arg = potential_args.shift) =~ /^-/ || arg.nil?
-        array << arg
+      until args.empty? || args.first.match(/^-/)
+        array << args.shift
       end
       array
     end

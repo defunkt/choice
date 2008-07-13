@@ -36,6 +36,11 @@ module Choice
       @@options << [name.to_s, option]
     end
   end
+  
+  # Return an array representing the rest of the command line arguments
+  def rest
+    @@rest
+  end
 
   # Returns a hash representing options passed in via the command line.
   def choices
@@ -80,7 +85,8 @@ module Choice
       begin
         # Delegate parsing to our parser class, passing it our defined 
         # options and the passed arguments.
-        @@choices = LazyHash.new(Parser.parse(@@options, @@args))
+        @@choices, @@rest = Parser.parse(@@options, @@args)
+        @@choices = LazyHash.new(@@choices)
       rescue Choice::Parser::ParseError
         # If we get an expected exception, show the help file.
         help
