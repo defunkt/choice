@@ -205,9 +205,12 @@ module Choice
     
     def make_validation(validation)
       case validation
-        when Proc then validation
-        when Regexp, String then Regexp.new(validation.to_s)
-        else raise ValidateExpectsRegexpOrBlock
+        when Proc then
+          validation
+        when Regexp, String then 
+          Regexp.new(validation.to_s)
+        else 
+          raise ValidateExpectsRegexpOrBlock
       end
     end
     
