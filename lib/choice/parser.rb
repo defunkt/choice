@@ -47,13 +47,8 @@ module Choice
         # Set the local hashes if the value exists on this option object.
         params.each { |param| hashes["#{param}s"][name] = obj[param] if obj[param] }
         
-        # If there is a validate statement, save it as a regex.
-        # If it's present but can't pull off a to_s (wtf?), raise an error.
-        validators[name] = case obj['validate']
-                           when Proc then obj['validate']
-                           when Regexp, String then Regexp.new(obj['validate'].to_s)
-                           else raise ValidateExpectsRegexpOrBlock
-                           end if obj['validate'] 
+        # If there is a validate statement, make it a regex or proc.
+        validators[name] = make_validation(obj['validate']) if obj['validate']
         
         # Parse the long option. If it contains a =, figure out if the 
         # argument is required or optional.  Optional arguments are formed
@@ -206,6 +201,14 @@ module Choice
         array << arg
       end
       array
+    end
+    
+    def make_validation(validation)
+      case validation
+        when Proc then validation
+        when Regexp, String then Regexp.new(validation.to_s)
+        else raise ValidateExpectsRegexpOrBlock
+      end
     end
     
     # All the possible exceptions this module can raise.
