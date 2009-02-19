@@ -180,4 +180,52 @@ HELP
     assert_equal ["Tell me about yourself?", ""], Choice.header
     assert_equal ["", "--help This message"], Choice.footer
   end
+  
+  def test_args_of
+    suits = %w[clubs diamonds spades hearts]
+    stringed_numerics = (1..13).to_a.map { |a| a.to_s }
+    valid_cards = stringed_numerics + %w[jack queen king ace]
+    cards = {}
+    stringed_numerics.each { |n| cards[n] = n }
+    cards.merge!('1' => 'ace', '11' => 'jack', '12' => 'queen', '13' => 'king')
+    
+    Choice.options do
+      header "Gambling is fun again!  Pick a card and a suit (or two), then see if you win!"
+      header ""
+      header "Options:" 
+
+      option :suit, :required => true do
+        short '-s'
+        long '--suit *SUITS'
+        desc "The suit you wish to choose.  Required.  You can pass in more than one, even."
+        desc "  Valid suits: #{suits * ' '}"
+        valid suits
+      end
+
+      separator ''
+
+      option :card, :required => true do
+        short '-c'
+        long '--card CARD'
+        desc "The card you wish to gamble on.  Required.  Only one, please."
+        desc "  Valid cards: 1 - 13, jack, queen, king, ace"
+        valid valid_cards
+        cast String
+      end
+      
+      #cheat! to test --option=
+      option :autowin do
+        short '-a'
+        long '--autowin=PLAYER'
+        desc 'The person who should automatically win every time'
+        desc 'Beware: raises the suspitions of other players'
+      end
+    end
+    
+    args = ["-c", "king", "--suit", "clubs", "diamonds", "spades", "hearts", "--autowin", "Grant"]
+    Choice.args = args
+    assert_equal ["king"], Choice.args_of("-c")
+    assert_equal ["clubs", "diamonds", "spades", "hearts"], Choice.args_of("--suit")
+    assert_equal ["Grant"], Choice.args_of("--autowin")
+  end
 end

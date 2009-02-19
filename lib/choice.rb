@@ -111,6 +111,22 @@ module Choice
     @@args
   end
   
+  # Returns the arguments that follow an argument
+  def args_of(opt)
+    args_of_opt = []
+    
+    # Return an array of the arguments between opt and the next option,
+    # which all start with "-"
+    @@args.slice(@@args.index(opt)+1, @@args.length).select do |arg|
+      if arg[0].chr != "-"
+        args_of_opt << arg
+      else
+        break
+      end
+    end
+    args_of_opt
+  end
+  
   # You can choose to not kill the script after the help screen is printed.
   def dont_exit_on_help=(val) #:nodoc:
     @@exit = true
