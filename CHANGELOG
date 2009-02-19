@@ -1,3 +1,6 @@
+0.1.3:
+  - Added args_of method to retrieve the arguments of an option
+  
 0.1.2:
   - Made validate directive accept block and validate against its boolean value.
   - Created shorthand format for defining options directly with a hash.
