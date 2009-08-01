@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Sun Nov 05 02:54:04 PST 2006</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Welcome to <a href="../classes/Choice.html">Choice</a></h1>
+<p>
+<a href="../classes/Choice.html">Choice</a> is a small library for defining
+and parsing command line options. It works awesomely with <a
+href="http://highline.rubyforge.org/">Highline</a> or other command line
+interface libraries.
+</p>
+<p>
+<a href="../classes/Choice.html">Choice</a> was written by Chris Wanstrath
+as an exercise in test driving development of a DSL. This project is still
+an infant: bugs are expected and tattling on them is appreciated.
+</p>
+<p>
+Installing is easy, with RubyGems. Give it a shot:
+</p>
+<pre>
+ $ gem install choice
+</pre>
+<p>
+If you are lost, you can find <a href="../classes/Choice.html">Choice</a>
+at <a href="http://choice.rubyforge.org">choice.rubyforge.org</a> or <a
+href="http://rubyforge.org/projects/choice">rubyforge.org/projects/choice</a>/.
+E-mail inquiries can be directed to <a
+href="mailto:chris[at]ozmm[dot]org">chris[at]ozmm[dot]org</a>.
+</p>
+<p>
+Of course, <a href="../classes/Choice.html">Choice</a> is licensed under
+the MIT License, which you can find included in the LICENSE file or by
+surfing your World Wide Web browser of choice towards <a
+href="http://www.opensource.org/licenses/mit-license.php">www.opensource.org/licenses/mit-license.php</a>.
+</p>
+<h2>Using <a href="../classes/Choice.html">Choice</a></h2>
+<p>
+An <tt>examples</tt> directory is included with <a
+href="../classes/Choice.html">Choice</a>, in which some contrived Ruby
+programs utilizing the library have been placed. Here&#8217;s a snippet:
+</p>
+<h3>ftpd.rb</h3>
+<pre>
+  require 'choice'
+
+  PROGRAM_VERSION = 4
+
+  Choice.options do
+    header ''
+    header 'Specific options:'
+
+    option :host do
+      short '-h'
+      long '--host=HOST'
+      desc 'The hostname or ip of the host to bind to (default 127.0.0.1)'
+      default '127.0.0.1'
+    end
+
+    option :port do
+      short '-p'
+      long '--port=PORT'
+      desc 'The port to listen on (default 21)'
+      cast Integer
+      default 21
+    end
+
+    separator ''
+    separator 'Common options: '
+
+    option :help do
+      long '--help'
+      desc 'Show this message'
+    end
+
+    option :version do
+      short '-v'
+      long '--version'
+      desc 'Show version'
+      action do
+        puts &quot;ftpd.rb FTP server v#{PROGRAM_VERSION}&quot;
+        exit
+      end
+    end
+  end
+
+  puts 'port: ' + Choice.choices[:port]
+</pre>
+<p>
+Notice the last line. For free, you will be given a <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a></tt> hash which
+contain, at runtime, the options found and their values.
+</p>
+<p>
+Because we gave option <tt>:port</tt> a default of 21, <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a>[:port]</tt> should
+be 21 if we run ftpd.rb with no options. Let&#8217;s see.
+</p>
+<pre>
+ $ ruby ftpd.rb
+ port: 21
+</pre>
+<p>
+Cool. On our system, port 21 is reserved. Let&#8217;s use another port.
+</p>
+<pre>
+ $ ruby ftpd.rb -p 2100
+ port: 2100
+</pre>
+<p>
+Alright. And, of course, there is the hard way of doing things.
+</p>
+<pre>
+ $ ruby ftpd.rb --port=2100
+ port: 2100
+</pre>
+<p>
+That <tt>:version</tt> option looks pretty interesting, huh? I wonder what
+it does&#8230;
+</p>
+<pre>
+  $ ruby ftpd.rb -v
+  ftpd.rb FTP server v4
+</pre>
+<p>
+That&#8217;s not all, though. We also get a <tt>&#8212;help</tt> option for
+free.
+</p>
+<pre>
+  $ ruby ftpd.rb --help
+  Usage: ftpd.rb [-hpv]
+
+  Specific options:
+      -h, --host=HOST                  The hostname or ip of the host to bind to (default 127.0.0.1)
+      -p, --port=PORT                  The port to listen on (default 21)
+
+  Common options:
+          --help                       Show this message
+      -v, --version                    Show version
+</pre>
+<h2>The <a href="../classes/Choice.html#M000003">Choice.choices</a> hash</h2>
+<p>
+For better or worse, the <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a></tt> hash is a bit
+lazy. It does not care how you access it. Using the above example, assume
+we have a <tt>:port</tt> option and we replace the last line of our program
+with the following three lines:
+</p>
+<pre>
+  puts 'port: ' + Choice.choices[:port]
+  puts 'port: ' + Choice.choices['port']
+  puts 'port: ' + Choice.choices.port
+</pre>
+<p>
+Now, run it.
+</p>
+<pre>
+  $ ftpd.rb -p 2100
+  port: 2100
+  port: 2100
+  port: 2100
+</pre>
+<p>
+Lazy, huh?
+</p>
+<p>
+Keep in mind that your option&#8217;s key in the <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a></tt> hash is
+defined by the first parameter passed to option statement. This is
+perfectly legit, albeit somewhat confusing:
+</p>
+<pre>
+  option :name do
+    short '-h'
+    long '--handle=NAME'
+    desc &quot;Your handle.&quot;
+  end
+</pre>
+<p>
+You can access this option by using <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a>[:name]</tt>, not
+<tt>:handle</tt>.
+</p>
+<h2>Option options</h2>
+<p>
+Obviously, <a href="../classes/Choice.html">Choice</a> revolves around the
+<tt>option</tt> statement, which receives a block. Here are all the, er,
+options <tt>option</tt> accepts. None of them are required but
+<tt>short</tt> or <tt>long</tt> must be present for <a
+href="../classes/Choice.html">Choice</a> to know what to do.
+</p>
+<p>
+Options must be defined in the context of a <tt><a
+href="../classes/Choice.html#M000001">Choice.options</a></tt> block, as
+seen above. This context is assumed for the following explanations.
+</p>
+<p>
+For the quick learners, here&#8217;s the list:
+</p>
+<ul>
+<li>short
+
+</li>
+<li>long
+
+</li>
+<li>default
+
+</li>
+<li>desc
+
+</li>
+<li>cast
+
+</li>
+<li>valid (takes array)
+
+</li>
+<li>validate (takes regex)
+
+</li>
+<li>filter (takes a block)
+
+</li>
+<li>action (ditto)
+
+</li>
+</ul>
+<p>
+You can define these within your option in any order which pleases you.
+</p>
+<h3>short</h3>
+<p>
+Defines the short switch for an option. Expected to be a dash and a single
+character.
+</p>
+<pre>
+  short '-s'
+</pre>
+<h3>long</h3>
+<p>
+Defines the long switch for an option. Expected to be a double dash
+followed by a string, an equal sign (or a space), and another string.
+</p>
+<p>
+There are two variants: longs where a parameter is required and longs where
+a parameter is optional, in which case the value will be <tt>true</tt> if
+the option is present.
+</p>
+<p>
+<b>Optional</b>:
+</p>
+<pre>
+  long '--debug=[LEVEL]'
+</pre>
+<p>
+Assuming our program defines Choices and ends with this line:
+</p>
+<pre>
+  puts 'debug: ' + Choice.choices[:debug]
+</pre>
+<p>
+we can do this:
+</p>
+<pre>
+  $ ruby ftpd.rb --debug
+  debug: true
+
+  $ ruby ftpd.rb --debug=1
+  debug: 1
+
+  $ ruby ftpd.rb --debug 1
+  debug: 1
+</pre>
+<p>
+<b>Required</b>:
+</p>
+<pre>
+  long '--debug=LEVEL'
+</pre>
+<p>
+Assuming the same as above:
+</p>
+<pre>
+  $ ruby ftpd.rb --debug 1
+  debug: 1
+
+  $ ruby ftpd.rb --debug
+  &lt;help screen printed&gt;
+</pre>
+<h3>long as array</h3>
+<p>
+Often you may wish to allow users the ability to pass in multiple arguments
+and have them all combined into an array. You can accomplish this by
+defining a <tt>long</tt> and setting the caps-argument to *ARG. Like this:
+</p>
+<pre>
+  long '--suit *SUITS'
+</pre>
+<p>
+<tt><a href="../classes/Choice.html#M000003">Choice.choices</a>.suits</tt>
+will now return an array. Here&#8217;s an example of usage:
+</p>
+<pre>
+  $ ruby --suit hearts clubs
+  suit: ['hearts', 'clubs']
+</pre>
+<p>
+Check out <tt>examples/gamble.rb</tt> for more information on this cool
+feature.
+</p>
+<h3>default</h3>
+<p>
+You can define a default value for your option, if you&#8217;d like. If the
+option is not present in the argument list, the default will be returned
+when trying to access that element of the <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a></tt> hash.
+</p>
+<p>
+As with the above, assume our program prints <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a>[:debug]</tt>:
+</p>
+<pre>
+  default 'info'
+</pre>
+<p>
+If we don&#8217;t pass in <tt>&#8212;debug</tt>, the <tt>:debug</tt>
+element of our hash will be &#8216;info.&#8217;
+</p>
+<pre>
+  $ ftpd.rb
+  debug: info
+
+  $ ftpd.rb --debug warn
+  debug: warn
+</pre>
+<h3>desc</h3>
+<p>
+The description of this option. Fairly straightforward, with one little
+trick: multiple <tt>desc</tt> statements in a single option will be
+considered new desc lines. The desc lines will be printed in the order they
+are defined. Like this:
+</p>
+<pre>
+  desc &quot;Your hostname.&quot;
+  desc &quot;(default 'localhost')&quot;
+</pre>
+<p>
+A snippet from your <tt>&#8212;help</tt> might then look like this:
+</p>
+<pre>
+  -h, --host=HOST                  Your hostname.
+                                   (default 127.0.0.1)
+</pre>
+<h3>cast</h3>
+<p>
+By default, all members of the <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a></tt> hash are
+strings. If you want something different, like an Integer for a port
+number, you can use the <tt>cast</tt> statement.
+</p>
+<pre>
+  cast Integer
+</pre>
+<p>
+Currently support <tt>cast</tt> options:
+</p>
+<ul>
+<li>Integer
+
+</li>
+<li>String
+
+</li>
+<li>Float
+
+</li>
+<li>Symbol
+
+</li>
+</ul>
+<p>
+We&#8216;ll probably add Date, Time, and DateTime in the future, if people
+want them.
+</p>
+<h3>valid</h3>
+<p>
+Giving <tt>valid</tt> an array creates a whitelist of acceptable arguments.
+</p>
+<pre>
+  valid %w[clubs hearts spades diamonds]
+</pre>
+<p>
+If our option is passed anything other than one of the four card suits, the
+help screen will be printed. It might be a good idea to include acceptable
+arguments in your option&#8217;s &quot;desc&quot; value.
+</p>
+<pre>
+  $ ruby gamble.rb -s clubs
+  suit: clubs
+
+  $ ruby gamble.rb -s joker
+  &lt;help screen printed&gt;
+</pre>
+<h3>validate</h3>
+<p>
+The <tt>validate</tt> statement accepts a regular expression which it will
+test against the value passed. If the test fails, the <tt>&#8212;help</tt>
+screen will be printed. I love ports, so let&#8217;s stick with that
+example:
+</p>
+<pre>
+  validate /^\d+$/
+</pre>
+<p>
+Of course, 2100 matches this:
+</p>
+<pre>
+  $ ruby ftpd.rb -p 2100
+  port: 2100
+</pre>
+<p>
+I like dogs. I wish dogs could be ports. Alas, <a
+href="../classes/Choice.html">Choice</a> knows better (once I&#8217;ve told
+it so):
+</p>
+<pre>
+  $ ruby ftpd.rb -p labradoodle
+  &lt;help screen printed&gt;
+</pre>
+<h3>filter</h3>
+<p>
+The <tt>filter</tt> statement lets you play with a value before it goes
+into the <tt><a
+href="../classes/Choice.html#M000003">Choice.choices</a></tt> hash. If you
+use <tt>cast</tt>, this will occur post-casting.
+</p>
+<p>
+In this program we&#8217;re defining a :name option and saying we
+don&#8217;t want any crazy characters in it, then printing that element of
+the <tt><a href="../classes/Choice.html#M000003">Choice.choices</a></tt>+
+hash:
+</p>
+<pre>
+  filter do |value|
+    value = value.gsub(/[^\w]/, '')
+  end
+</pre>
+<p>
+Now:
+</p>
+<pre>
+  $ ruby ftpd.rb --name=c.hr.is
+  name: chris
+</pre>
+<p>
+You can probably think of better uses.
+</p>
+<h3>action</h3>
+<p>
+A block passed to the <tt>action</tt> statement will be run if that
+particular option is passed. See the <tt>&#8212;version</tt> example
+earlier.
+</p>
+<h3>required options</h3>
+<p>
+You can specify an option as being required by passing :required =&gt; true
+to the option definition. <a href="../classes/Choice.html">Choice</a> will
+then print the help screen if this option is not present. Please let your
+dear users know which options are required.
+</p>
+<p>
+For example:
+</p>
+<pre>
+  option :card, :required =&gt; true do
+    short '-c'
+    long '--card CARD'
+    desc &quot;The card you wish to gamble on.  Required.  Only one, please.&quot;
+  end
+</pre>
+<p>
+Then:
+</p>
+<pre>
+  $ ruby gamble.rb
+  &lt;help screen, -c or --card wasn't passed&gt;
+</pre>
+<h2>Other options</h2>
+<p>
+These statements are purely aesthetic, used to help make your
+<tt>&#8212;help</tt> screen a little more digestible.
+</p>
+<p>
+Passing an empty string to any of these options will print a newline.
+</p>
+<h3>banner</h3>
+<p>
+The banner is the first line printed when your program is called with
+<tt>&#8212;help</tt>. By default, it will be something like this, based on
+the options defined:
+</p>
+<pre>
+  Usage: ftpd.rb [-hpv]
+</pre>
+<p>
+You can pass any string to the <tt>banner</tt> statement to override what
+prints. This might be useful if you&#8217;re into ascii art.
+</p>
+<pre>
+  banner &quot;Usage: ftpd.rb&quot;
+</pre>
+<h3>header</h3>
+<p>
+The header is what shows up after the banner but before your option
+definitions are printed. Each header call is a newline. Check out the
+example above.
+</p>
+<pre>
+  header &quot;ftp is a harsh and unforgiving protocol.&quot;
+</pre>
+<h3>separator</h3>
+<p>
+As in the example above, you can put separators between options to help
+display the logical groupings of your options. Or whatever.
+</p>
+<pre>
+  separator &quot;----&quot;
+</pre>
+<p>
+To get a blank line, rock an empty string:
+</p>
+<pre>
+  separator ''
+</pre>
+<h3>footer</h3>
+<p>
+The footer is displayed after all your options are displayed. Nothing new
+here, works like the other options above.
+</p>
+<pre>
+  footer &quot;That's all there is to it!&quot;
+</pre>
+<h2>Shorthand</h2>
+<p>
+Now that you&#8217;ve gone through all the hard stuff, here&#8217;s the
+easy stuff: <a href="../classes/Choice.html">Choice</a> options can be
+defined with a simple hash if you&#8217;d like. Here&#8217;s an example,
+from the tests:
+</p>
+<pre>
+   Choice.options do
+     header &quot;Tell me about yourself?&quot;
+     header &quot;&quot;
+     options :band =&gt; { :short =&gt; &quot;-b&quot;, :long =&gt; &quot;--band=BAND&quot;, :cast =&gt; String, :desc =&gt; &quot;Your favorite band.&quot;,
+                       :validate =&gt; /\w+/ },
+             :animal =&gt; { :short =&gt; &quot;-a&quot;, :long =&gt; &quot;--animal=ANIMAL&quot;, :cast =&gt; String, :desc =&gt; &quot;Your favorite animal.&quot; }
+
+     footer &quot;&quot;
+     footer &quot;--help This message&quot;
+   end
+</pre>
+<p>
+How&#8217;s that tickle you? Real nice.
+</p>
+<h2>It looks like poetry</h2>
+<p>
+That&#8217;s it. Not much, I know. Maybe this will make handling your
+command line options a bit easier. You can always use the option parser in
+the standard Ruby library, but DSLs are just so cool. As one of my
+non-programmer friends said of a Ruby DSL: &quot;It looks like
+poetry.&quot;
+</p>
+<h2>It&#8217;s totally broken</h2>
+<p>
+Okay, I knew this would happen. Do me a favor, if you have time: run
+<tt>rake</tt> from the <a href="../classes/Choice.html">Choice</a>
+directory and send me the output (<a
+href="mailto:chris[at]ozmm[dot]org">chris[at]ozmm[dot]org</a>).
+This&#8216;ll run the unit tests. Also, if you would, send me a bit of
+information on your platform. <a href="../classes/Choice.html">Choice</a>
+was tested on OS X and RHEL with a 2.4 kernel but who knows. Thanks a lot.
+</p>
+<h2>Thanks to</h2>
+<p>
+For bug reports, patches, and ideas I&#8217;d be honored to thank the
+following:
+</p>
+<ul>
+<li>Justin Bailey
+
+</li>
+<li>Alexis Li
+
+</li>
+</ul>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
