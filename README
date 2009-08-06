@@ -68,13 +68,15 @@ programs utilizing the library have been placed.  Here's a snippet:
     end
   end
 
-  puts 'port: ' + Choice.choices[:port]
+  puts 'port: ' + Choice[:port]
 
 Notice the last line.  For free, you will be given a <tt>Choice.choices</tt> 
-hash which contain, at runtime, the options found and their values.
+hash which contain, at runtime, the options found and their values. 
+
+<tt>Choice[:key]</tt> is a shortcut for <tt>Choice.choices[:key]</tt>.
 
 Because we gave option <tt>:port</tt> a default of 21, 
-<tt>Choice.choices[:port]</tt> should be 21 if we run ftpd.rb with no options.  
+<tt>Choice[:port]</tt> should be 21 if we run ftpd.rb with no options.  
 Let's see.
 
  $ ruby ftpd.rb
@@ -89,7 +91,7 @@ Alright.  And, of course, there is the hard way of doing things.
 
  $ ruby ftpd.rb --port=2100
  port: 2100
- 
+
 That <tt>:version</tt> option looks pretty interesting, huh?  I wonder what it 
 does...
  

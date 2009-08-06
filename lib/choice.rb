@@ -47,20 +47,25 @@ module Choice
     @@choices
   end
 
+  # Shortcut access to Choice.choices
+  def [](choice)
+    choices[choice]
+  end
+
   # Defines an option.
   def option(opt, options = {}, &block)
     # Notice: options is maintained as an array of arrays, the first element
     # the option name and the second the option object.
     @@options << [opt.to_s, Option.new(options, &block)]
   end
-  
+
   # Separators are text displayed by --help within the options block.
   def separator(str)
-    # We store separators as simple strings in the options array to maintain 
+    # We store separators as simple strings in the options array to maintain
     # order.  They are ignored by the parser.
     @@options << str
   end
-  
+
   # Define the banner, header, footer methods.  All are just getters/setters
   # of class variables.
   %w[banner header footer].each do |method|

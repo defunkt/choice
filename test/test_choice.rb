@@ -32,27 +32,30 @@ class TestChoice < Test::Unit::TestCase
       footer ""
       footer "--help This message"
     end
-    
+
     band = 'LedZeppelin'
     animal = 'Reindeer'
-    
+
     args = ['-b', band, "--animal=#{animal}"]
     Choice.args = args
-    
+
     assert_equal band, Choice.choices['band']
     assert_equal animal, Choice.choices[:animal]
     assert_equal ["Tell me about yourself?", ""], Choice.header
     assert_equal ["", "--help This message"], Choice.footer
+
+    assert_equal Choice.choices['band'], Choice['band']
+    assert_equal Choice.choices[:animal], Choice[:animal]
   end
-  
+
   def test_failed_parse
     assert Hash.new, Choice.parse
   end
-  
+
   HELP_STRING = ''
   def test_help
     Choice.output_to(HELP_STRING)
-    
+
     Choice.options do
       banner "Usage: choice [-mu]"
       header ""
