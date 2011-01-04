@@ -82,9 +82,15 @@ module Choice
   def parse #:nodoc:
     # Do nothing if options are not defined.
     return unless @@options.size > 0
-
+		
+		@@options.each do |opt|
+			if opt[0] == "help"
+				@@short = opt[1].short
+			end
+		end
+		
     # Show help if it's anywhere in the argument list.
-    if @@args.include?('--help')
+    if @@args.include?('--help') || @@args.include?(@@short)
       help
     else
       begin
