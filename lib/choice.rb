@@ -81,7 +81,12 @@ module Choice
   # Parse the provided args against the defined options.
   def parse #:nodoc:
     # Do nothing if options are not defined.
-    return unless @@options.size > 0
+
+		if @@args.size <= 0 && show_help_on_no_args? == true
+			help
+		else
+    	return unless @@options.size > 0
+		end
 		
 		@@options.each do |opt|
 			if opt[0] == "help"
@@ -153,7 +158,17 @@ module Choice
   def exit_on_help? #:nodoc:
     @@exit rescue false
   end
-  
+
+	# Option to show the help if no args are given
+	def show_help_on_no_args=(val)
+  	@@help_no_args = val
+	end
+
+	# Do we want to show the help if no args are sent?
+	def show_help_on_no_args?
+		@@help_no_args rescue false
+	end
+
   # If we want to write to somewhere other than STDOUT.
   def output_to(target = nil) #:nodoc:
     @@output_to ||= STDOUT
