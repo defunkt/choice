@@ -1,9 +1,10 @@
 # ripped off of jamis buck's lovely net::sftp rakefile
 
 require 'rubygems'
+require 'rubygems/gem_runner'
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'rake/contrib/sshpublisher'
 require './lib/choice/version'
 
@@ -21,8 +22,6 @@ PACKAGE_FILES = FileList.new do |fl|
   fl.include "CHANGELOG", "README", "LICENSE"
   fl.include SOURCE_FILES
 end
-
-Gem.manage_gems
 
 def can_require( file )
   begin
@@ -151,10 +150,10 @@ task :rdoc => :rdoc_core do
   }
 end
 
-Rake::RDocTask.new( :rdoc_core ) do |rdoc|
+RDoc::Task.new(:rdoc_core) do |rdoc|
   rdoc.rdoc_dir = rdoc_dir
   rdoc.title    = "Choice -- A simple command line option parser"
-  rdoc.option_string << '--line-numbers --inline-source --main README'
+  rdoc.options << '--line-numbers --inline-source --main README'
   rdoc.rdoc_files.include 'README'
   rdoc.rdoc_files.include 'lib/**/*.rb'
 end
