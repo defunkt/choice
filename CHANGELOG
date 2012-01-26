@@ -1,3 +1,8 @@
+0.1.4:
+  - Monkeypatch to Hash for #index deprecation. Only applied on RUBY_VERSION >= "1.9"
+  - Fixed rake file for README filename change
+  - Fixed a broken test that's been broken since 2009.
+
 0.1.3:
   - Added args_of method to retrieve the arguments of an option
   

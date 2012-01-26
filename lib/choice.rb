@@ -4,6 +4,12 @@ require 'choice/parser'
 require 'choice/writer'
 require 'choice/lazyhash'
 
+if RUBY_VERSION >= "1.9"
+  class Hash
+    alias_method(:key, :index) unless method_defined?(:key)
+  end
+end
+
 #
 # Usage of this module is lovingly detailed in the README file.
 #

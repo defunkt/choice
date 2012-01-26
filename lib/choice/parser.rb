@@ -178,7 +178,11 @@ module Choice
         
         # Now that we've done all that, re-set the element of the choice hash
         # with the (potentially) new value.
-        choices[name] = value
+        if arrayed[name] && choices[name].empty?
+          choices[name] = true
+        else
+          choices[name] = value
+        end
       end
       
       # Die if we're missing any required arguments

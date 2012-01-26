@@ -19,7 +19,7 @@ SOURCE_FILES = FileList.new do |fl|
 end
 
 PACKAGE_FILES = FileList.new do |fl|
-  fl.include "CHANGELOG", "README", "LICENSE"
+  fl.include "CHANGELOG", "README.rdoc", "LICENSE"
   fl.include SOURCE_FILES
 end
 
@@ -57,7 +57,7 @@ task :prepackage do
     puts " Please check that the following files have been updated"
     puts " in preparation for release #{Choice::Version::STRING}:"
     puts
-    puts "   README (with latest info)"
+    puts "   README.rdoc (with latest info)"
     puts "   CHANGELOG (with the recent changes)"
     puts "   lib/choice/version.rb (with current version number)"
     puts
@@ -126,7 +126,7 @@ file "#{package_dir}/#{gem_file}" => package_dir do
   	s.summary = "Choice is a command line option parser."
   	s.description = "Choice is a simple little gem for easily defining and parsing command line options with a friendly DSL."
   	s.require_paths = [ 'lib' ]
-  	s.files = %w[README CHANGELOG LICENSE]
+  	s.files = %w[README.rdoc CHANGELOG LICENSE]
   	[ 'lib/**/*', 'test/*', 'examples/*' ].each do |dir|
   	  s.files += Dir.glob( dir ).delete_if { |item| item =~ /^\./ }
   	end
@@ -153,8 +153,8 @@ end
 RDoc::Task.new(:rdoc_core) do |rdoc|
   rdoc.rdoc_dir = rdoc_dir
   rdoc.title    = "Choice -- A simple command line option parser"
-  rdoc.options << '--line-numbers --inline-source --main README'
-  rdoc.rdoc_files.include 'README'
+  rdoc.options << '--line-numbers --inline-source --main README.rdoc'
+  rdoc.rdoc_files.include 'README.rdoc'
   rdoc.rdoc_files.include 'lib/**/*.rb'
 end
 
