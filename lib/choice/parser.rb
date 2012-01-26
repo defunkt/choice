@@ -105,7 +105,7 @@ module Choice
 
           # Add this value to the choices hash with the key of the option's
           # name.  If we expect an array, tack this argument on.
-          name = hashes['shorts'].index(arg)
+          name = hashes['shorts'].key(arg)
           if arrayed[name]
             choices[name] ||= []
             choices[name] << value unless value.nil?
@@ -119,7 +119,7 @@ module Choice
           
           # Grab values from --long=VALUE format
           name, value = arg.split('=', 2)
-          name = longs.index(name)
+          name = longs.key(name)
           
           if value.nil? && args.first !~ /^-/
             # Grab value otherwise if not in --long=VALUE format.  Assume --long VALUE.
