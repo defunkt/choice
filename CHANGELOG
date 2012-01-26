@@ -1,5 +1,5 @@
 0.1.4:
-  - Monkeypatch to Hash for #index deprecation. Only applied on RUBY_VERSION >= "1.9"
+  - Monkeypatch to Hash for #index deprecation. Only applied on RUBY_VERSION < "1.9"
   - Fixed rake file for README filename change
   - Fixed a broken test that's been broken since 2009.
 
