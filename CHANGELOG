@@ -1,3 +1,8 @@
+0.1.6:
+  - Use Array on a value that can be a string or an array.
+  - Wrap the banner/footer/header defining method with a method with a default param.
+  - Fixed expectation that Choice.parse returns an empty hash. It really returns a nil.
+
 0.1.4:
   - Monkeypatch to Hash for #index deprecation. Only applied on RUBY_VERSION < "1.9"
   - Fixed rake file for README filename change
