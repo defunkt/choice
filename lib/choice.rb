@@ -81,8 +81,13 @@ module Choice
       val = class_variable_get(variable) || ''
       class_variable_set(variable, val << string)
     end
-  end
 
+    if RUBY_VERSION > "1.9"
+      original_method = "original_#{method}" 
+      alias_method original_method, method
+      eval "def #{method}(string=nil); #{original_method}(string); end"
+    end
+  end
   
   # Parse the provided args against the defined options.
   def parse #:nodoc:

@@ -165,7 +165,7 @@ module Choice
         end
 
         # Make sure the argument is valid
-        raise InvalidArgument unless value.to_a.all? { |v| hashes['valids'][name].include?(v) } if hashes['valids'][name] 
+        raise InvalidArgument unless Array(value).all? { |v| hashes['valids'][name].include?(v) } if hashes['valids'][name] 
 
         # Cast the argument using the method defined in the constant hash.
         value = value.send(CAST_METHODS[hashes['casts'][name]]) if hashes['casts'].include?(name)

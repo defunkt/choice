@@ -9,7 +9,7 @@ class TestChoice < Test::Unit::TestCase
   def setup
     Choice.reset!
     Choice.dont_exit_on_help = true
-    Choice.send(:class_variable_set, '@@choices', true)
+    Choice.send(:class_variable_set, '@@choices', {})
   end
     
   def test_choices
@@ -49,7 +49,7 @@ class TestChoice < Test::Unit::TestCase
   end
 
   def test_failed_parse
-    assert Hash.new, Choice.parse
+    assert_equal nil, Choice.parse
   end
 
   HELP_STRING = ''
