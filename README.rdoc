@@ -68,7 +68,7 @@ programs utilizing the library have been placed.  Here's a snippet:
     end
   end
 
-  puts 'port: ' + Choice[:port]
+  puts Choice[:port]
 
 Notice the last line.  For free, you will be given a <tt>Choice.choices</tt> 
 hash which contain, at runtime, the options found and their values. 
