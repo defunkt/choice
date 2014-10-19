@@ -1,7 +1,7 @@
 = Welcome to Choice
 
 Choice is a small library for defining and parsing command line options.  It 
-works awesomely with Highline[http://highline.rubyforge.org/] or other command 
+works awesomely with Highline[https://github.com/JEG2/highline] or other command 
 line interface libraries.
 
 Choice was written by Chris Wanstrath as an exercise in test driving development 
@@ -11,9 +11,7 @@ is appreciated.
 Installing is easy, with RubyGems.  Give it a shot:
  $ gem install choice
 
-If you are lost, you can find Choice at http://choice.rubyforge.org or 
-http://rubyforge.org/projects/choice/.  E-mail inquiries can be directed to
-mailto:chris[at]ozmm[dot]org.
+E-mail inquiries can be directed to mailto:chris[at]ozmm[dot]org.
 
 Of course, Choice is licensed under the MIT License, which you can find included
 in the LICENSE file or by surfing your World Wide Web browser of choice towards 
