@@ -80,10 +80,10 @@ class TestChoice < Test::Unit::TestCase
 Usage: choice [-mu]
 
     -m                               Your favorite meal.
-                                     
-                                     
+
+And you eat it with...
     -u, --utencil[=UTENCIL]          Your favorite eating utencil.
-    HELP
+HELP
 
     assert_equal help_string, HELP_STRING
   end
@@ -116,10 +116,10 @@ Usage: choice [-mu]
 Usage: choice [-mu]
 
     -m                               Your favorite meal.
-                                     
-                                     
+
+And you eat it with...
     -u, --utencil[=UTENCIL]          Your favorite eating utencil.
-    HELP
+HELP
 
     assert_equal help_string, UNKNOWN_STRING
   end
@@ -152,10 +152,10 @@ Usage: choice [-mu]
 Usage: choice [-mu]
 
     -m                               Your favorite meal.
-                                     
-                                     
+
+And you eat it with...
     -u, --utencil[=UTENCIL]          Your favorite eating utencil.
-    HELP
+HELP
 
     assert_equal help_string, REQUIRED_STRING
   end
@@ -166,7 +166,7 @@ Usage: choice [-mu]
       header ""
       options :band => { :short => "-b", :long => "--band=BAND", :cast => String, :desc => ["Your favorite band.", "Something cool."],
                          :validate => /\w+/ },
-                         :animal => { :short => "-a", :long => "--animal=ANIMAL", :cast => String, :desc => "Your favorite animal." }
+              :animal => { :short => "-a", :long => "--animal=ANIMAL", :cast => String, :desc => "Your favorite animal." }
 
       footer ""
       footer "--help This message"
@@ -195,7 +195,7 @@ Usage: choice [-mu]
     Choice.options do
       header "Gambling is fun again!  Pick a card and a suit (or two), then see if you win!"
       header ""
-      header "Options:" 
+      header "Options:"
 
       option :suit, :required => true do
         short '-s'

@@ -63,7 +63,7 @@ module Choice
         # If the option is a hash, run it through option_line.  Otherwise
         # just print it out as is.
         options.each do |name, option|
-          if option.respond_to?(:to_h)
+          if option and option.respond_to?(:to_h)
             option_line(option.to_h)          
           else
             puts name
