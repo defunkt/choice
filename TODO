@@ -1,1 +1,5 @@
 1. Add support for defining the number of arguments an option takes.
+2. Use a static gemspec.
+3. Add a Gemfile to help with consistency in development.
+4. Simplify anything in the Rakefile that has a more common current practice.
+5. Either make everything work on 1.8.6+ or start deprecating older interpreters.
