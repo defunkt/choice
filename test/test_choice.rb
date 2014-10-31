@@ -80,8 +80,8 @@ class TestChoice < Test::Unit::TestCase
 Usage: choice [-mu]
 
     -m                               Your favorite meal.
-                                     
-                                     
+
+And you eat it with...
     -u, --utencil[=UTENCIL]          Your favorite eating utencil.
     HELP
 
@@ -116,8 +116,8 @@ Usage: choice [-mu]
 Usage: choice [-mu]
 
     -m                               Your favorite meal.
-                                     
-                                     
+
+And you eat it with...
     -u, --utencil[=UTENCIL]          Your favorite eating utencil.
     HELP
 
@@ -152,8 +152,8 @@ Usage: choice [-mu]
 Usage: choice [-mu]
 
     -m                               Your favorite meal.
-                                     
-                                     
+
+And you eat it with...
     -u, --utencil[=UTENCIL]          Your favorite eating utencil.
     HELP
 
