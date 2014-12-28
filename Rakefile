@@ -61,7 +61,7 @@ task :prepackage do
     puts "   CHANGELOG (with the recent changes)"
     puts "   lib/choice/version.rb (with current version number)"
     puts
-    puts " Did you remember to 'rake tag'?"  
+    puts " Did you remember to 'rake tag'?"
     puts
     puts " If you are sure these have all been taken care of, re-run"
     puts " rake with 'OK=yes'."
@@ -74,10 +74,12 @@ end
 
 desc "Tag the current trunk with the current release version"
 task :tag do
-  warn "WARNING: this will tag svn://rubyforge.org/var/svn/choice/trunk using the tag v#{Choice::Version::MAJOR}_#{Choice::Version::MINOR}_#{Choice::Version::TINY}"
+  tag = "v#{Choice::Version::STRING}"
+  warn "WARNING: this will tag using the tag #{tag} and push the ref to git://www.github.com/defunkt/choice"
   warn "If you do not wish to continue, you have 5 seconds to cancel by pressing CTRL-C..."
   5.times { |i| print "#{5-i} "; $stdout.flush; sleep 1 }
-  system "svn copy svn+ssh://defunkt@rubyforge.org/var/svn/choice/trunk svn+ssh://defunkt@rubyforge.org/var/svn/choice/tags/v#{Choice::Version::MAJOR}_#{Choice::Version::MINOR}_#{Choice::Version::TINY} -m \"Tagging the #{Choice::Version::STRING} release\""
+  system "git tag -a #{tag} -m \"Tagging the #{tag} release\""
+  system "git push origin #{tag}"
 end
 
 package_name = "#{PACKAGE_NAME}-#{PACKAGE_VERSION}"
@@ -132,7 +134,7 @@ file "#{package_dir}/#{gem_file}" => package_dir do
   	end
   	s.author = "Chris Wanstrath"
   	s.email = 'chris@ozmm.org'
-  	s.homepage = 'http://choice.rubyforge.org/'
+  	s.homepage = 'http://www.github.com/defunkt/choice'
   	s.autorequire = 'choice'
   end
   Gem::Builder.new(spec).build
@@ -157,14 +159,3 @@ RDoc::Task.new(:rdoc_core) do |rdoc|
   rdoc.rdoc_files.include 'README.rdoc'
   rdoc.rdoc_files.include 'lib/**/*.rb'
 end
-
-desc "Publish the API documentation"
-task :pubrdoc => [ :rdoc ] do
-Rake::SshDirPublisher.new(
-  "defunkt@rubyforge.org",
-  "/var/www/gforge-projects/choice/",
-  "api" ).upload
-end
-
-desc "Publish the documentation"
-task :pubdoc => [:pubrdoc]

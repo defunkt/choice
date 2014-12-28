@@ -1,3 +1,6 @@
+0.1.7:
+  - Fix bug related to NilClass#to_h
+  - Remove rubyforge doc publishing
 0.1.6:
   - Use Array on a value that can be a string or an array.
   - Wrap the banner/footer/header defining method with a method with a default param.
@@ -10,7 +13,7 @@
 
 0.1.3:
   - Added args_of method to retrieve the arguments of an option
-  
+
 0.1.2:
   - Made validate directive accept block and validate against its boolean value.
   - Created shorthand format for defining options directly with a hash.
