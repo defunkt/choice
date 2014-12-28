@@ -1,6 +1,6 @@
 0.1.7:
   - Fix bug related to NilClass#to_h
-  - Remove rubyforge doc publishing
+  - Simplified packaging process: Now possible to package with an up-to-date system.
 0.1.6:
   - Use Array on a value that can be a string or an array.
   - Wrap the banner/footer/header defining method with a method with a default param.
