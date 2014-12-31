@@ -1,4 +1,6 @@
-{<img src="https://travis-ci.org/defunkt/choice.svg?branch=master" />}[https://travis-ci.org/defunkt/choice]
+= 1.8.6 Note
+
+This worked on 1.8.6 the last time I checked. I currently cannot easily get 1.8.6 to install locally. Please report any problems.
 
 = Welcome to Choice
 
