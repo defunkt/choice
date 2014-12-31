@@ -1,3 +1,5 @@
+0.2.0:
+  - Removed some version specific hacks. Including 1.8.6 support.
 0.1.7:
   - Fix bug related to NilClass#to_h
   - Simplified packaging process: Now possible to package with an up-to-date system.
