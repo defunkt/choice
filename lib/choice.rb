@@ -13,7 +13,7 @@ end
 #
 # Usage of this module is lovingly detailed in the README file.
 #
-module Choice 
+module Choice
   extend self
 
   # The main method, which defines the options
@@ -24,7 +24,7 @@ module Choice
     # Setup all instance variables
     reset! if hash.empty?
     @@args ||= ARGV
-    
+
     # Eval the passed block to define the options.
     instance_eval(&block) if block_given?
 
@@ -36,13 +36,13 @@ module Choice
   def options_from_hash(options_hash)
     options_hash.each do |name, definition|
       option = Option.new
-      definition.each do |key, value| 
+      definition.each do |key, value|
         Array(value).each { |hit| option.send(key, hit) }
       end
       @@options << [name.to_s, option]
     end
   end
-  
+
   # Return an array representing the rest of the command line arguments
   def rest
     @@rest
@@ -83,12 +83,12 @@ module Choice
     end
 
     if RUBY_VERSION > "1.9"
-      original_method = "original_#{method}" 
+      original_method = "original_#{method}"
       alias_method original_method, method
       eval "def #{method}(string=nil); #{original_method}(string); end"
     end
   end
-  
+
   # Parse the provided args against the defined options.
   def parse #:nodoc:
     # Do nothing if options are not defined.
@@ -99,7 +99,7 @@ module Choice
       help
     else
       begin
-        # Delegate parsing to our parser class, passing it our defined 
+        # Delegate parsing to our parser class, passing it our defined
         # options and the passed arguments.
         @@choices, @@rest = Parser.parse(@@options, @@args)
         @@choices = LazyHash.new(@@choices)
@@ -109,19 +109,19 @@ module Choice
       end
     end
   end
-  
+
   # Did we already parse the arguments?
   def parsed? #:nodoc:
     @@choices ||= false
   end
-  
+
   # Print the help screen by calling our Writer object
   def help #:nodoc:
-    Writer.help( { :banner => @@banner, :header => @@header, 
-                   :options => @@options, :footer => @@footer }, 
+    Writer.help( { :banner => @@banner, :header => @@header,
+                   :options => @@options, :footer => @@footer },
                    output_to, exit_on_help? )
   end
-  
+
   # Set the args, potentially to something other than ARGV.
   def args=(args) #:nodoc:
     @@args = args.dup.map { |a| a + '' }
@@ -132,11 +132,11 @@ module Choice
   def args #:nodoc:
     @@args
   end
-  
+
   # Returns the arguments that follow an argument
   def args_of(opt)
     args_of_opt = []
-    
+
     # Return an array of the arguments between opt and the next option,
     # which all start with "-"
     @@args.slice(@@args.index(opt)+1, @@args.length).select do |arg|
@@ -148,24 +148,24 @@ module Choice
     end
     args_of_opt
   end
-  
+
   # You can choose to not kill the script after the help screen is printed.
   def dont_exit_on_help=(val) #:nodoc:
     @@exit = true
   end
-  
+
   # Do we want to exit on help?
   def exit_on_help? #:nodoc:
     @@exit rescue false
   end
-  
+
   # If we want to write to somewhere other than STDOUT.
   def output_to(target = nil) #:nodoc:
     @@output_to ||= STDOUT
     return @@output_to if target.nil?
     @@output_to = target
   end
-  
+
   # Reset all the class variables.
   def reset! #:nodoc:
     @@args    = false
