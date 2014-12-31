@@ -69,17 +69,11 @@ module Choice
   # Define the banner, header, footer methods.  All are just getters/setters
   # of class variables.
   %w[banner header footer].each do |method|
-    define_method(method) do |string|
+    define_method(method) do |string=nil|
       variable = "@@#{method}"
       return class_variable_get(variable) if string.nil?
       val = class_variable_get(variable) || ''
       class_variable_set(variable, val << string)
-    end
-
-    if RUBY_VERSION > "1.9"
-      original_method = "original_#{method}"
-      alias_method original_method, method
-      eval "def #{method}(string=nil); #{original_method}(string); end"
     end
   end
 
