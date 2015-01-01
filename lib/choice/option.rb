@@ -3,11 +3,6 @@ module Choice
   # The Option class parses and stores all the information about a specific
   # option.
   class Option #:nodoc: all
-
-    # Since we define getters/setters on the fly, we need a white list of
-    # which to accept.  Here's the list.
-    CHOICES = %w[short long desc default filter action cast validate valid]
-
     # You can instantiate an option on its own or by passing it a name and
     # a block.  If you give it a block, it will eval() the block and set itself
     # up nicely.
@@ -24,31 +19,87 @@ module Choice
       @choices << 'required'
     end
 
-    # This is the catch all for the getter/setter choices defined in CHOICES.
-    # It also gives us choice? methods.
     def method_missing(method, *args, &block)
-      # Get the name of the choice we want, as a class variable string.
-      var = "@#{method.to_s.sub('?','')}"
+      # Mask NoMethodError
+      # TODO: Remove this, if it doesn't make sense.
+      raise ParseError, "I don't know `#{method}'"
+    end
 
-      # To string, for regex purposes.
-      method = method.to_s
+    def short(value=nil)
+      value_setter('short', value)
+      @short
+    end
 
-      # Don't let in any choices not defined in our white list array.
-      raise ParseError, "I don't know `#{method}'" unless CHOICES.include? method.sub('?','')
+    def short?
+      @short
+    end
 
-      # If we're asking a question, give an answer.  Like 'short?'.
-      return !!instance_variable_get(var) if method =~ /\?/
+    def long(value=nil)
+      value_setter('long', value)
+      @long
+    end
 
-      # If we were called with no arguments, we want a get.
-      return instance_variable_get(var) unless args[0] || block_given?
+    def long?
+      @long
+    end
 
-      # If we were given a block or an argument, save it.
-      instance_variable_set(var, args[0]) if args[0]
-      instance_variable_set(var, block) if block_given?
+    def default(value=nil)
+      value_setter('default', value)
+      @default
+    end
 
-      # Add the choice to the @choices array if we're setting it for the first
-      # time.
-      @choices << method if args[0] || block_given? unless @choices.index(method)
+    def default?
+      @default
+    end
+
+    def cast(value=nil)
+      value_setter('cast', value)
+      @cast
+    end
+
+    def cast?
+      @cast
+    end
+
+    def valid(value=nil)
+      value_setter('valid', value)
+      @valid
+    end
+
+    def valid?
+      @valid
+    end
+
+    # TODO: Should this be split into two different validate methods?
+    def validate(value=nil, &block)
+      if !value.nil?
+        value_setter('validate', value)
+      elsif !block.nil?
+        block_setter('validate', &block)
+      end
+      @validate
+    end
+
+    def validate?
+      @validate
+    end
+
+    def action(&block)
+      block_setter('action', &block)
+      @action
+    end
+
+    def action?
+      @action
+    end
+
+    def filter(&block)
+      block_setter('filter', &block)
+      @filter
+    end
+
+    def filter?
+      @filter
     end
 
     # The desc method is slightly special: it stores itself as an array and
@@ -80,6 +131,22 @@ module Choice
       @choices.inject({}) do |hash, choice|
         return hash unless @choices.include? choice
         hash.merge choice => instance_variable_get("@#{choice}")
+      end
+    end
+
+    private
+
+    def value_setter(name, value)
+      unless value.nil?
+        instance_variable_set("@#{name}", value)
+        @choices << name unless @choices.include?(name)
+      end
+    end
+
+    def block_setter(name, &block)
+      if block
+        instance_variable_set("@#{name}", block)
+        @choices << name unless @choices.include?(name)
       end
     end
 

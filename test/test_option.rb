@@ -14,7 +14,7 @@ class TestOption < Test::Unit::TestCase
     line_two = "I can add many lines."
     line_three = "There is no limit."
 
-    assert_equal false, @option.desc?
+    refute @option.desc?
 
     @option.desc line_one
     @option.desc line_two
@@ -30,7 +30,7 @@ class TestOption < Test::Unit::TestCase
   def test_choice
     short = "-p"
 
-    assert_equal false, @option.short?
+    refute @option.short?
 
     @option.short short
 
@@ -56,7 +56,7 @@ class TestOption < Test::Unit::TestCase
   end
 
   def test_block_choice
-    assert_equal false, @option.action?
+    refute @option.action?
 
     @option.action do
       1 + 1
