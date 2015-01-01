@@ -67,8 +67,8 @@ HELP
     help_string = <<-HELP
 Usage: #{program} [-mr]
 
-    -m, --media=MEDIA
-    -r, --rom=ROM
+    -m, --media=MEDIA                
+    -r, --rom=ROM                    
 HELP
 
     Choice::Writer.help(args, BANNER_OUT, true)
