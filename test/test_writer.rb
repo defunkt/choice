@@ -3,11 +3,11 @@ require 'test/unit'
 require 'choice'
 
 class TestWriter < Test::Unit::TestCase
-  
+
   def setup
     Choice.reset!
   end
-  
+
   HELP_OUT = ''
   def test_help
     song = Choice::Option.new do
@@ -45,10 +45,10 @@ Wake up.
 HELP
 
     Choice::Writer.help(args, HELP_OUT, true)
-    
+
     assert_equal help_string, HELP_OUT
   end
-  
+
   BANNER_OUT = ''
   def test_banner
     media = Choice::Option.new do
@@ -67,37 +67,37 @@ HELP
     help_string = <<-HELP
 Usage: #{program} [-mr]
 
-    -m, --media=MEDIA                
-    -r, --rom=ROM                    
+    -m, --media=MEDIA
+    -r, --rom=ROM
 HELP
 
     Choice::Writer.help(args, BANNER_OUT, true)
-    
+
     assert_equal help_string, BANNER_OUT
   end
-  
+
   SPILLOVER_OUT = ''
   def test_desc_spillover
     toolong = Choice::Option.new do
       long '--thisisgonnabewaytoolongiswear=STRING'
       desc 'Way too long, boy wonder.'
     end
-    
+
     options = [[:toolong, toolong]]
-    
+
     help_string = <<-HELP
 Usage: #{program}
         --thisisgonnabewaytoolongiswear=STRING
                                      Way too long, boy wonder.
 HELP
-    
+
 
     Choice::Writer.help({:options => options}, SPILLOVER_OUT, true)
-    
+
     assert_equal help_string, SPILLOVER_OUT
   end
-  
+
   def program
-    if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end  
+    if (/(\/|\\)/ =~ $0) then File.basename($0) else $0 end
   end
 end

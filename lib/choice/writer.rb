@@ -2,14 +2,14 @@ module Choice
   # This module writes to the screen.  As of now, its only real use is writing
   # the help screen.
   module Writer #:nodoc: all
-    
+
     # Some constants used for printing and line widths
     SHORT_LENGTH = 6
-    SHORT_BREAK_LENGTH = 2 
+    SHORT_BREAK_LENGTH = 2
     LONG_LENGTH = 29
     PRE_DESC_LENGTH = SHORT_LENGTH + SHORT_BREAK_LENGTH + LONG_LENGTH
-    
-    
+
+
     # The main method.  Takes a hash of arguments with the following possible
     # keys, running them through the appropriate method:
     #  banner, header, options, footer
@@ -35,7 +35,7 @@ module Choice
 
     class <<self
       private
-      
+
       # Print a passed banner or assemble the default banner, which is usage.
       def banner(banner, options)
         if banner
@@ -45,7 +45,7 @@ module Choice
           usage(options)
         end
       end
-      
+
       # Print our header, which is just lines after the banner and before the
       # options block.  Needs an array, prints each element as a line.
       def header(header)
@@ -59,18 +59,18 @@ module Choice
       def options(options)
         # Do nothing if there's nothing to do.
         return if options.nil? || !options.size
-        
+
         # If the option is a hash, run it through option_line.  Otherwise
         # just print it out as is.
         options.each do |name, option|
           if !option.nil? && option.respond_to?(:to_h)
-            option_line(option.to_h)          
+            option_line(option.to_h)
           else
             puts name
           end
         end
       end
-      
+
       # The heavy lifting: print a line for an option.  Has intimate knowledge
       # of what keys are expected.
       def option_line(option)
@@ -96,30 +96,30 @@ module Choice
         if option['desc']
           # If the line is too long, spill over to the next line
           if line.length > PRE_DESC_LENGTH
-            puts           
+            puts
             print " " * PRE_DESC_LENGTH
           end
 
           puts option['desc'].shift
-          
+
           # If there is more than one desc line, print each one in succession
           # as separate lines.
-          option['desc'].each do |desc| 
+          option['desc'].each do |desc|
             puts ' '*37 + desc
           end
 
         else
           # No desc, just print a newline.
-          puts 
+          puts
 
         end
       end
-      
+
       # Expects an array, prints each element as a line.
       def footer(footer)
         footer.each { |line| puts line } unless footer.nil?
       end
-      
+
       # Prints the usage statement, e.g. Usage prog.rb [-abc]
       # Expects an array.
       def usage(options)
@@ -134,19 +134,19 @@ module Choice
           # We really need an array here.
           next unless option.is_a?(Array)
 
-          # Grab the hash of the last element, which should be the second 
+          # Grab the hash of the last element, which should be the second
           # element.
           option = option.last.to_h
 
           # Add the short to the options string.
           opts << option['short'].sub('-','') if option['short']
         end
-        
+
         # Figure out if we actually got any options.
         opts = if opts =~ /^-(.+)/
                  " [#{opts}]"
                end.to_s
-        
+
         # Print it out, with our newly aquired options string.
         puts "Usage: #{program}" << opts
       end
@@ -160,7 +160,7 @@ module Choice
       def target=(target)
         @@target = target
       end
-      
+
       # Where do we print?
       def target
         @@target
@@ -172,7 +172,7 @@ module Choice
         str = '' if str.nil?
         print(str + "\n")
       end
-      
+
       # Fake printf
       def printf(format, *args)
         print(sprintf(format, *args))
@@ -180,7 +180,7 @@ module Choice
 
       # Fake print -- just add to target, which may not be STDOUT.
       def print(str)
-        target << str 
+        target << str
       end
     end
   end

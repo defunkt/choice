@@ -1,5 +1,5 @@
 module Choice
- 
+
   # This class lets us get away with really bad, horrible, lazy hash accessing.
   # Like so:
   #   hash = LazyHash.new
@@ -9,14 +9,14 @@ module Choice
   #   puts hash.someplace
   #
   # If you'd like, you can pass in a current hash when initializing to convert
-  # it into a lazyhash.  Or you can use the .to_lazyhash method attached to the 
+  # it into a lazyhash.  Or you can use the .to_lazyhash method attached to the
   # Hash object (evil!).
-  class LazyHash < Hash 
-    
+  class LazyHash < Hash
+
     # Keep the old methods around.
     alias_method :old_store, :store
     alias_method :old_fetch, :fetch
-    
+
     # You can pass in a normal hash to convert it to a LazyHash.
     def initialize(hash = nil)
       hash.each { |key, value| self[key] = value } if !hash.nil? && hash.is_a?(Hash)
@@ -26,7 +26,7 @@ module Choice
     def store(key, value)
       self[key] = value
     end
-    
+
     # Wrapper for []=
     def fetch(key)
       self[key]
@@ -37,7 +37,7 @@ module Choice
       key = key.to_s if key.is_a? Symbol
       self.old_store(key, value)
     end
-    
+
     # Every key is stored as a string.  Like a normal hash, nil is returned if
     # the key does not exist.
     def [](key)
@@ -55,13 +55,13 @@ module Choice
         self[meth]
       end
     end
-    
+
   end
 end
 
 # Really ugly, horrible, extremely fun hack.
-class Hash #:nodoc: 
+class Hash #:nodoc:
   def to_lazyhash
-    return Choice::LazyHash.new(self) 
+    return Choice::LazyHash.new(self)
   end
 end
