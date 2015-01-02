@@ -131,7 +131,7 @@ And you eat it with...
     Choice.options do
       banner "Usage: choice [-mu]"
       header ""
-      option :meal, :required => true do
+      option :meal, :true do
         short '-m'
         desc 'Your favorite meal.'
       end
@@ -195,9 +195,9 @@ And you eat it with...
     Choice.options do
       header "Gambling is fun again!  Pick a card and a suit (or two), then see if you win!"
       header ""
-      header "Options:" 
+      header "Options:"
 
-      option :suit, :required => true do
+      option :suit, :true do
         short '-s'
         long '--suit *SUITS'
         desc "The suit you wish to choose.  Required.  You can pass in more than one, even."
@@ -207,7 +207,7 @@ And you eat it with...
 
       separator ''
 
-      option :card, :required => true do
+      option :card, :true do
         short '-c'
         long '--card CARD'
         desc "The card you wish to gamble on.  Required.  Only one, please."

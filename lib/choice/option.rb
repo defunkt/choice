@@ -3,52 +3,92 @@ module Choice
   # The Option class parses and stores all the information about a specific
   # option.
   class Option #:nodoc: all
-
-    # Since we define getters/setters on the fly, we need a white list of
-    # which to accept.  Here's the list.
-    CHOICES = %w[short long desc default filter action cast validate valid]
-
     # You can instantiate an option on its own or by passing it a name and
     # a block.  If you give it a block, it will eval() the block and set itself
     # up nicely.
-    def initialize(options = {}, &block)
-      # Here we store the definitions this option contains, to make to_a and
-      # to_h easier.
-      @choices = []
-
+    def initialize(required = false, &block)
       # If we got a block, eval it and set everything up.
       instance_eval(&block) if block_given?
 
       # Is this option required?
-      @required = options[:required] || false
-      @choices << 'required'
+      @required = required
     end
 
-    # This is the catch all for the getter/setter choices defined in CHOICES.
-    # It also gives us choice? methods.
+    attr_reader :required
+
     def method_missing(method, *args, &block)
-      # Get the name of the choice we want, as a class variable string.
-      var = "@#{method.to_s.sub('?','')}"
+      # Mask NoMethodError
+      # TODO: Remove this, if it doesn't make sense.
+      raise ParseError, "I don't know `#{method}'"
+    end
 
-      # To string, for regex purposes.
-      method = method.to_s
+    def short(value=nil)
+      @short ||= value
+    end
 
-      # Don't let in any choices not defined in our white list array.
-      raise ParseError, "I don't know `#{method}'" unless CHOICES.include? method.sub('?','')
+    def short?
+      @short
+    end
 
-      # If we're asking a question, give an answer.  Like 'short?'.
-      return !!instance_variable_get(var) if method =~ /\?/
+    def long(value=nil)
+      @long ||= value
+    end
 
-      # If we were called with no arguments, we want a get.
-      return instance_variable_get(var) unless args[0] || block_given?
+    def long?
+      @long
+    end
 
-      # If we were given a block or an argument, save it.
-      instance_variable_set(var, args[0]) if args[0]
-      instance_variable_set(var, block) if block_given?
+    def default(value=nil)
+      @default ||= value
+    end
 
-      # Add the choice to the @choices array if we're setting it for the first
-      # time.
-      @choices << method if args[0] || block_given? unless @choices.index(method)
+    def default?
+      @default
+    end
+
+    def cast(value=nil)
+      @cast ||= value
+    end
+
+    def cast?
+      @cast
+    end
+
+    def valid(value=nil)
+      @valid ||= value
+    end
+
+    def valid?
+      @valid
+    end
+
+    # TODO: Should this be split into two different validate methods?
+    def validate(value=nil, &block)
+      @validate ||= if !value.nil?
+                      value
+                    elsif !block.nil?
+                      block
+                    end
+    end
+
+    def validate?
+      @validate
+    end
+
+    def action(&block)
+      @action ||= block
+    end
+
+    def action?
+      @action
+    end
+
+    def filter(&block)
+      @filter ||= block
+    end
+
+    def filter?
+      @filter
     end
 
     # The desc method is slightly special: it stores itself as an array and
@@ -59,28 +99,43 @@ module Choice
 
       @desc ||= []
       @desc.push(string)
-
-      # Only add to @choices array if it's not already present.
-      @choices << 'desc' unless @choices.index('desc')
     end
 
     # Simple, desc question method.
-    def desc?() !!@desc end
+    def desc?
+      @desc
+    end
 
     # Returns Option converted to an array.
     def to_a
-      @choices.inject([]) do |array, choice|
-        return array unless @choices.include? choice
-        array + [instance_variable_get("@#{choice}")]
-      end
+      [
+        required,
+        short,
+        long,
+        desc,
+        default,
+        filter,
+        action,
+        cast,
+        valid,
+        validate
+      ].compact
     end
 
     # Returns Option converted to a hash.
     def to_h
-      @choices.inject({}) do |hash, choice|
-        return hash unless @choices.include? choice
-        hash.merge choice => instance_variable_get("@#{choice}")
-      end
+      {
+        "required" => required,
+        "short" => short,
+        "long" => long,
+        "desc" => desc,
+        "default" => default,
+        "filter" => filter,
+        "action" => action,
+        "cast" => cast,
+        "valid" => valid,
+        "validate" => validate
+      }.reject {|k, v| v.nil? }
     end
 
     # In case someone tries to use a method we don't know about in their
