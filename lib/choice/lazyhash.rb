@@ -19,7 +19,7 @@ module Choice
 
     # You can pass in a normal hash to convert it to a LazyHash.
     def initialize(hash = nil)
-      hash.each { |key, value| self[key] = value } if !hash.nil? && hash.is_a?(Hash)
+      hash.each { |key, value| self[key] = value } if hash && hash.is_a?(Hash)
     end
 
     # Wrapper for []
