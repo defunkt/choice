@@ -19,7 +19,7 @@ module Choice
 
     # You can pass in a normal hash to convert it to a LazyHash.
     def initialize(hash = nil)
-      hash.each { |key, value| self[key] = value } if !hash.nil? && hash.is_a?(Hash)
+      hash.each { |key, value| self[key] = value } if hash && hash.is_a?(Hash)
     end
 
     # Wrapper for []
@@ -34,15 +34,15 @@ module Choice
 
     # Store every key as a string.
     def []=(key, value)
-      key = key.to_s if key.is_a? Symbol
-      self.old_store(key, value)
+      key = key.to_s if key.is_a?(Symbol)
+      old_store(key, value)
     end
 
     # Every key is stored as a string.  Like a normal hash, nil is returned if
     # the key does not exist.
     def [](key)
-      key = key.to_s if key.is_a? Symbol
-      self.old_fetch(key) rescue return nil
+      key = key.to_s if key.is_a?(Symbol)
+      old_fetch(key) rescue return nil
     end
 
     # You can use hash.something or hash.something = 'thing' since this is
@@ -50,7 +50,7 @@ module Choice
     def method_missing(meth, *args)
       meth = meth.to_s
       if meth =~ /=/
-        self[meth.sub('=','')] = args.first
+        self[meth.sub('=', '')] = args.first
       else
         self[meth]
       end
@@ -62,6 +62,6 @@ end
 # Really ugly, horrible, extremely fun hack.
 class Hash #:nodoc:
   def to_lazyhash
-    return Choice::LazyHash.new(self)
+    Choice::LazyHash.new(self)
   end
 end
