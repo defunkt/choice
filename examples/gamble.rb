@@ -38,5 +38,5 @@ suit = suits[rand(suits.size)]
 card = cards[(rand(13)+1).to_s]
 
 puts "I drew the #{card} of #{suit}."
-puts "You picked the #{Choice.choices.card} of #{Choice.choices.suit * ' or '}."
-puts "You " << (Choice.choices.suit.include?(suit) && card == cards[Choice.choices.card] ? 'win!' : 'lose :(')
+puts "You picked the #{Choice.choices[:card]} of #{Choice.choices[:suit] * ' or '}."
+puts "You " << (Choice.choices[:suit].include?(suit) && card == cards[Choice.choices[:card]] ? 'win!' : 'lose :(')
