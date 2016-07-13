@@ -28,8 +28,8 @@ class TestParser < Test::Unit::TestCase
 
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal band, choices['band']
-    assert_equal animal, choices['animal']
+    assert_equal band, choices[:band]
+    assert_equal animal, choices[:animal]
   end
 
   def test_parse_no_options
@@ -47,7 +47,7 @@ class TestParser < Test::Unit::TestCase
 
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal 'PibbJr', choices['soda']
+    assert_equal 'PibbJr', choices[:soda]
   end
 
   def test_parse_options_with_filters
@@ -62,7 +62,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-h', host]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal 'defunct', choices['host']
+    assert_equal 'defunct', choices[:host]
   end
 
   def test_casting
@@ -75,7 +75,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-p', port]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal port.to_i, choices['port']
+    assert_equal port.to_i, choices[:port]
   end
 
   def test_text_required
@@ -105,13 +105,13 @@ class TestParser < Test::Unit::TestCase
     args = ['-c']
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert choices['color']
+    assert choices[:color]
 
     color = 'ladyblue'
     args = ['-c', color]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal color, choices['color']
+    assert_equal color, choices[:color]
   end
 
   def test_text_optional_deprecated
@@ -123,13 +123,13 @@ class TestParser < Test::Unit::TestCase
     args = ['-c']
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert choices['color']
+    assert choices[:color]
 
     color = 'ladyblue'
     args = ['-c', color]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal color, choices['color']
+    assert_equal color, choices[:color]
   end
 
   def test_ignore_separator
@@ -147,7 +147,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-m', 'onebutton']
     choices, rest = Choice::Parser.parse([options.first, '----', options.last], args)
 
-    assert choices['mouse']
+    assert choices[:mouse]
     assert_equal 1, choices.size
   end
 
@@ -160,7 +160,7 @@ class TestParser < Test::Unit::TestCase
     args = ['--bacon']
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert choices['chunky']
+    assert choices[:chunky]
   end
 
   def test_validate_regexp
@@ -182,7 +182,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-e', email_good]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal email_good, choices['email']
+    assert_equal email_good, choices[:email]
   end
 
   def test_validate_block
@@ -206,7 +206,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-f', file_good]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal file_good, choices['file']
+    assert_equal file_good, choices[:file]
   end
 
   def test_unknown_argument
@@ -241,7 +241,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-s', suit_good]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal suit_good, choices['suit']
+    assert_equal suit_good, choices[:suit]
   end
 
   def test_valid_needs_argument
@@ -269,19 +269,19 @@ class TestParser < Test::Unit::TestCase
 
     args = ['-m', mediums.first, '-m',  mediums[1], '-m', mediums.last]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal mediums, choices['medium']
+    assert_equal mediums, choices[:medium]
 
     args = ['-m', mediums.first, mediums[1], mediums.last]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal mediums, choices['medium']
+    assert_equal mediums, choices[:medium]
 
     args = ["--medium=#{mediums.first}", "--medium=#{mediums[1]}", "--medium=#{mediums.last}"]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal mediums, choices['medium']
+    assert_equal mediums, choices[:medium]
 
     args = ["--medium=#{mediums.first}", mediums[1], mediums.last]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal mediums, choices['medium']
+    assert_equal mediums, choices[:medium]
   end
 
   def test_long_as_array_optional
@@ -296,11 +296,11 @@ class TestParser < Test::Unit::TestCase
     args = ["--instruments=#{instruments.first}", "--instruments=#{instruments[1]}",
             "--instruments=#{instruments.last}"]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal instruments, choices['instruments']
+    assert_equal instruments, choices[:instruments]
 
     args = %w[--instruments]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal true, choices['instruments']
+    assert_equal true, choices[:instruments]
   end
 
   def test_long_as_array_with_valid
@@ -316,7 +316,7 @@ class TestParser < Test::Unit::TestCase
     args = ['-s', suits.first, suits.last]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal suits, choices['suits']
+    assert_equal suits, choices[:suits]
 
     args = ['-s', suits.first, 'notasuit']
     assert_raise(Choice::Parser::InvalidArgument) do
@@ -336,7 +336,7 @@ class TestParser < Test::Unit::TestCase
     args = ['--donut', donut]
     choices, rest = Choice::Parser.parse(@options, args)
 
-    assert_equal donut, choices['donut']
+    assert_equal donut, choices[:donut]
   end
 
   def test_optional_long_with_spaces
@@ -350,11 +350,11 @@ class TestParser < Test::Unit::TestCase
 
     args = ['--donut', donut]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal donut, choices['donut']
+    assert_equal donut, choices[:donut]
 
     args = ['--donut']
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal true, choices['donut']
+    assert_equal true, choices[:donut]
   end
 
   def test_long_with_spaces_arrayed
@@ -368,7 +368,7 @@ class TestParser < Test::Unit::TestCase
 
     args = ['--donuts', donuts.first, donuts.last]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal donuts, choices['donuts']
+    assert_equal donuts, choices[:donuts]
   end
 
   def test_long_with_rest
@@ -382,7 +382,7 @@ class TestParser < Test::Unit::TestCase
 
     args = ['eat', '--donut', donut]
     choices, rest = Choice::Parser.parse(@options, args)
-    assert_equal donut, choices['donut']
+    assert_equal donut, choices[:donut]
     assert_equal ['eat'], rest
   end
 end
