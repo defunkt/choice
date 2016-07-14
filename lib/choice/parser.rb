@@ -38,7 +38,7 @@ module Choice
 
       # Inspect each option and move its info into our local hashes.
       options.each do |name, obj|
-        name = name.to_s
+        name = name.to_sym
 
         # Only take hashes or hash-like duck objects.
         raise HashExpectedForOption unless obj.respond_to? :to_h

@@ -2,7 +2,6 @@ $:.unshift File.dirname(__FILE__)
 require 'choice/option'
 require 'choice/parser'
 require 'choice/writer'
-require 'choice/lazyhash'
 
 #
 # Usage of this module is lovingly detailed in the README file.
@@ -90,7 +89,6 @@ module Choice
         # Delegate parsing to our parser class, passing it our defined
         # options and the passed arguments.
         @@choices, @@rest = Parser.parse(@@options, @@args)
-        @@choices = LazyHash.new(@@choices)
       rescue Choice::Parser::ParseError
         # If we get an expected exception, show the help file.
         help

@@ -39,12 +39,12 @@ class TestChoice < Test::Unit::TestCase
     args = ['-b', band, "--animal=#{animal}"]
     Choice.args = args
 
-    assert_equal band, Choice.choices['band']
+    assert_equal band, Choice.choices[:band]
     assert_equal animal, Choice.choices[:animal]
     assert_equal ["Tell me about yourself?", ""], Choice.header
     assert_equal ["", "--help This message"], Choice.footer
 
-    assert_equal Choice.choices['band'], Choice['band']
+    assert_equal Choice.choices[:band], Choice[:band]
     assert_equal Choice.choices[:animal], Choice[:animal]
   end
 
@@ -178,7 +178,7 @@ And you eat it with...
     args = ['-b', band, "--animal=#{animal}"]
     Choice.args = args
 
-    assert_equal band, Choice.choices['band']
+    assert_equal band, Choice.choices[:band]
     assert_equal animal, Choice.choices[:animal]
     assert_equal ["Tell me about yourself?", ""], Choice.header
     assert_equal ["", "--help This message"], Choice.footer

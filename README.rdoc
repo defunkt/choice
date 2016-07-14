@@ -114,24 +114,6 @@ That's not all, though.  We also get a <tt>--help</tt> option for free.
 
 == The Choice.choices hash
 
-For better or worse, the <tt>Choice.choices</tt> hash is a bit lazy.  It does
-not care how you access it.  Using the above example, assume we have a
-<tt>:port</tt> option and we replace the last line of our program with the
-following three lines:
-
-  puts 'port: ' + Choice.choices[:port]
-  puts 'port: ' + Choice.choices['port']
-  puts 'port: ' + Choice.choices.port
-
-Now, run it.
-
-  $ ftpd.rb -p 2100
-  port: 2100
-  port: 2100
-  port: 2100
-
-Lazy, huh?
-
 Keep in mind that your option's key in the <tt>Choice.choices</tt> hash is
 defined by the first parameter passed to option statement.  This is perfectly
 legit, albeit somewhat confusing:
