@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["gaustin@gmail.com", "chris@ozmm.org"]
   spec.summary       = "Choice is a command line option parser."
   spec.description   = "Choice is a simple little gem for easily defining and parsing command line options with a friendly DSL."
-  spec.homepage      = "http://www.github.com/defunkt/choice"
+  spec.homepage      = "https://github.com/defunkt/choice"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
